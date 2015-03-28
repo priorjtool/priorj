@@ -70,7 +70,7 @@ public class PriorJ {
 //			techniques.add(TechniqueCreator.TOTAL_STATEMENT_COVERAGE);
 		}
 		else if (typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
-			techniques.add(TechniqueCreator.ECHELON_CHANGED);
+//			techniques.add(TechniqueCreator.ECHELON_CHANGED);
 		}
 		else{
 			throw new IllegalArgumentException("Invalid Technique Type!");

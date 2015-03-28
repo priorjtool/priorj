@@ -76,6 +76,10 @@ public class TechniqueEchelonTotal extends ModificationTechnique implements Tech
         
         ArrayList<TestCase> notWeighted = new ArrayList<TestCase>();
         
+        TechniqueEchelonChanged echelon = new TechniqueEchelonChanged();
+        echelon.setAffectedBlocks(blockAffected);
+        echelon.prioritize(tests);
+        
         for (TestCase testCase : copyList) {
         	double value = getWeight(testCase.getStatementsCoverage());
         	if (value != 0.0)

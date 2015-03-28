@@ -106,7 +106,8 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
 		}
     }
     
-    private List<TestCaseEchelonComparable> calculateScore(final List<TestCaseEchelonComparable> weightedList) {
+    private List<StatementEchelonChanged> createStatementEchelonList(
+    		final List<TestCaseEchelonComparable> weightedList) {
     	List<StatementEchelonChanged> statements = new ArrayList<StatementEchelonChanged>();
     	
     	// Itera sobre todos os blocks afetados.
@@ -127,6 +128,12 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
     		i++;
     	}
     	
+    	return statements;
+    }
+    
+    private List<TestCaseEchelonComparable> calculateScore(final List<TestCaseEchelonComparable> weightedList) {
+    	List<StatementEchelonChanged> statements = createStatementEchelonList(weightedList);
+    	
     	return null;
     }
     
@@ -141,8 +148,7 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
         
         System.out.println("Weighted:");
         for (TestCaseEchelonComparable testCase : weightedList) {
-			System.out.println(testCase.getTestCase().getName() + " " + testCase.getWeight() + " " 
-					+ testCase.getScore());
+			System.out.println(testCase);
 		}
         System.out.println("Not Weighted:");
         for (TestCase testCase : notWeightedList) {

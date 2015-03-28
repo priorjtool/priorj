@@ -97,4 +97,10 @@ public class TestCaseEchelonComparable implements Comparable {
 		return obj.compareTo(objToCompare);
 	}
 
+	@Override
+	public String toString() {
+		return "TestCaseEchelonComparable [weight=" + weight + ", testCase="
+				+ testCase + ", statementCoverage=" + statementCoverage
+				+ ", score=" + score + "]";
+	}
 }
