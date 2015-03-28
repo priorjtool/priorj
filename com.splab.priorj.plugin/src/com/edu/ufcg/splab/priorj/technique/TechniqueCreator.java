@@ -14,7 +14,7 @@ public class TechniqueCreator {
 	public static final int ADDITIONAL_STATEMENT_COVERAGE = 3;
 	public static final int RANDOM = 4;
 	public static final int CHANGED_BLOCKS = 5;
-	public static final int RBA = 6;
+	public static final int ECHELON_CHANGED = 6;
 	
 	/**
 	 * Create a instance of a technique type.
@@ -41,8 +41,8 @@ public class TechniqueCreator {
 		else if (typeOfTechnique == TechniqueCreator.CHANGED_BLOCKS){
 			return new TechniqueEchelonTotal();
 		}
-		else if (typeOfTechnique == TechniqueCreator.RBA){
-			return new TechniqueRBA("");
+		else if (typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
+			return new TechniqueEchelonChanged();
 		}
 		else{
 			throw new IllegalArgumentException("Type of Technique Invalid.");
@@ -74,8 +74,8 @@ public class TechniqueCreator {
 		else if (typeOfTechnique == TechniqueCreator.RANDOM){
 			return "RND";
 		}
-		else if (typeOfTechnique == TechniqueCreator.RBA){
-			return "RBA";
+		else if (typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
+			return "EC";
 		}
 		else{
 			throw new IllegalArgumentException("Type of Technique Invalid.");

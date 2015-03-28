@@ -69,8 +69,8 @@ public class PriorJ {
 		else if (typeOfTechnique == TechniqueCreator.TOTAL_STATEMENT_COVERAGE){
 //			techniques.add(TechniqueCreator.TOTAL_STATEMENT_COVERAGE);
 		}
-		else if (typeOfTechnique == TechniqueCreator.RBA){
-//			techniques.add(TechniqueCreator.RBA);
+		else if (typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
+			techniques.add(TechniqueCreator.ECHELON_CHANGED);
 		}
 		else{
 			throw new IllegalArgumentException("Invalid Technique Type!");
@@ -148,16 +148,15 @@ public class PriorJ {
 			technique.setBlockAffected(affectedBlocks);
 			return technique.prioritize(allTests);
 
+		} else if (typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
+			TechniqueEchelonChanged technique = new TechniqueEchelonChanged();
+			technique.setAffectedBlocks(affectedBlocks);
+			return technique.prioritize(allTests);
+		} else {
+			Technique technique = creator.create(typeOfTechnique);
+			return technique.prioritize(allTests);
 		}
-		else{
-			if (typeOfTechnique == TechniqueCreator.RBA){
-				TechniqueRBA technique = new TechniqueRBA(projPath);
-				return technique.prioritize(allTests);
-			}else{
-				Technique technique = creator.create(typeOfTechnique);
-				return technique.prioritize(allTests);
-			}
-		}
+		
 	}
 
 	public List<String> prioritizeExp(int typeOfTechnique, List<TestCase> allTests) throws EmptySetOfTestCaseException {
@@ -167,15 +166,13 @@ public class PriorJ {
 			technique.setBlockAffected(affectedBlocks);
 			return technique.prioritize(allTests);
 
-		}
-		else{
-			if (typeOfTechnique == TechniqueCreator.RBA){
-				TechniqueRBA technique = new TechniqueRBA(projPath);
-				return technique.prioritize(allTests);
-			}else{
-				Technique technique = creator.create(typeOfTechnique);
-				return technique.prioritize(allTests);
-			}
+		} else if (typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
+			TechniqueEchelonChanged technique = new TechniqueEchelonChanged();
+			technique.setAffectedBlocks(affectedBlocks);
+			return technique.prioritize(allTests);
+		} else {
+			Technique technique = creator.create(typeOfTechnique);
+			return technique.prioritize(allTests);
 		}
 	}
 
@@ -214,7 +211,7 @@ public class PriorJ {
 			List<String> weightList;
 			List<String> notWeightList;
 			if (typeOfTechnique == TechniqueCreator.CHANGED_BLOCKS || 
-					typeOfTechnique == TechniqueCreator.RBA){
+					typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
 				if (typeOfTechnique == TechniqueCreator.CHANGED_BLOCKS ){
 					TechniqueEchelonTotal technique = new TechniqueEchelonTotal();
 					technique.setBlockAffected(affectedBlocks);
@@ -223,8 +220,9 @@ public class PriorJ {
 					technique.prioritize(allTests);
 					weightList = technique.weightList;
 					notWeightList = technique.notWeightList;
-				}else{
-					TechniqueRBA technique = new TechniqueRBA(projPath);
+				} else {
+					TechniqueEchelonChanged technique = new TechniqueEchelonChanged();
+					technique.setAffectedBlocks(affectedBlocks);
 					technique.weightList = new ArrayList<String>();
 					technique.notWeightList = new ArrayList<String>();
 					technique.prioritize(allTests);
