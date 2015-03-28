@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   
+     <extension id="PriorJBuilder"
+   		point="org.eclipse.core.resources.builders">
+   		<builder
+   		callOnEmptyDelta="false"
+   		hasNature="false"
+   		isConfigurable="false"
+   		supportsConfigurations="false">
+   			<run class="com.edu.ufcg.splab.priorj.core.PriorJBuilder" />
+		</builder>
+	</extension>
+	
+</plugin>

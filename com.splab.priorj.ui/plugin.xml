@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Prioritization"
+            id="com.splab.priorj.ui">
+      </category>
+      <view
+            name="Prioritization"
+            icon="icons/view.png"
+            category="com.splab.priorj.ui"
+            class="com.splab.priorj.ui.views.PrioritizationView"
+            id="com.splab.priorj.ui.views.PrioritizationView">
+      </view>
+   </extension>
+   <extension
+         id="com.splab.priorj.ui.category"
+         name="PriorJUI"
+         point="org.eclipse.ui.commands">
+      <category
+            description="Comands Related with Prioritization UI"
+            id="com.splab.priorj.ui.category"
+            name="PriorJUI">
+      </category>
+      <command
+            categoryId="com.splab.priorj.ui.category"
+            defaultHandler="com.splab.priorj.ui.handlers.OpenPrioritizationViewHandler"
+            description="Open the Prioritization view if it is not already visible"
+            id="com.splab.priorj.ui.commands.openView"
+            name="Open Prioritization View">
+      </command>
+      <command
+            categoryId="com.splab.priorj.ui.category"
+            defaultHandler="com.splab.priorj.ui.handlers.OpenPrioritizationWizardHandler"
+            description="Creating a new Prioritization"
+            id="com.splab.priorj.ui.commands.newPrioritization"
+            name="New Prioritization">
+      </command>
+      <command
+            defaultHandler="com.splab.priorj.ui.handlers.OpenInstrumentationWizardHandler"
+            description="Creating a New Instrumentation"
+            id="com.splab.priorj.ui.commands.newInstrumentation"
+            name="New Instrumentation">
+      </command>
+      <command
+            defaultHandler="com.splab.priorj.ui.handlers.OpenConfigurePathWizardHandler"
+            description="Setting a Local to Save Prioritizations Artifacts"
+            id="com.splab.priorj.ui.commands.configureLocalStorage"
+            name="Configure Local Storage">
+      </command>
+      <command
+            defaultHandler="com.splab.priorj.ui.handlers.OpenImportWizardHandler"
+            description="Importing suites generated"
+            id="com.splab.priorj.ui.commands.openImportWizard"
+            name="Import Suites">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="true"
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="com.splab.priorj.ui.menus.priorJMenu"
+               label="PriorJ"
+               mnemonic="p">
+            <command
+                  commandId="com.splab.priorj.ui.commands.openView"
+                  icon="icons/view.png"
+                  id="com.splab.priorj.ui.openPrioritizationView"
+                  mnemonic="o"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+                  <with
+                        variable="activeContexts">
+                  </with>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="com.splab.priorj.ui.commands.newPrioritization"
+                  icon="icons/new.png"
+                  label="New Prioritization"
+                  mnemonic="n"
+                  style="push"
+                  tooltip="Creating a new Prioritization">
+            </command>
+            <command
+                  commandId="com.splab.priorj.ui.commands.newInstrumentation"
+                  icon="icons/inst.png"
+                  label="New Instrumentation"
+                  mnemonic="i"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.splab.priorj.ui.commands.openImportWizard"
+                  icon="icons/in.gif"
+                  label="Import Suites"
+                  style="push">
+            </command>
+            <separator
+                  name="com.splab.priorj.ui.separator"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="com.splab.priorj.ui.commands.configureLocalStorage"
+                  icon="icons/bd.png"
+                  label="Configure Local Base Path"
+                  mnemonic="b"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               id="com.splab.priorj.ui.menus.priorJMenuPopup"
+               label="PriorJ">
+            <command
+                  commandId="com.splab.priorj.ui.commands.openView"
+                  icon="icons/view.png"
+                  label="Open Prioritization View"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.splab.priorj.ui.commands.newPrioritization"
+                  icon="icons/new.png"
+                  label="New Prioritization"
+                  style="push"
+                  tooltip="Creating a new Prioritization">
+            </command>
+            <command
+                  commandId="com.splab.priorj.ui.commands.newInstrumentation"
+                  icon="icons/inst.png"
+                  label="New Instrumentation"
+                  mnemonic="i"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.splab.priorj.ui.commands.openImportWizard"
+                  icon="icons/in.gif"
+                  label="Import Suites"
+                  style="push">
+            </command>
+            <separator
+                  name="com.splab.priorj.ui.separator"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="com.splab.priorj.ui.commands.configureLocalStorage"
+                  icon="icons/bd.png"
+                  label="Configure Local Base Path"
+                  mnemonic="b"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="true"
+            locationURI="menu:file?after=additions">
+         <menu
+               label="PriorJ">
+            <command
+                  commandId="com.splab.priorj.ui.commands.openView"
+                  icon="icons/view.png"
+                  label="Open Prioritization View"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.splab.priorj.ui.commands.newPrioritization"
+                  icon="icons/new.png"
+                  label="New Prioritization"
+                  mnemonic="n"
+                  style="push"
+                  tooltip="Creating a new Prioritization">
+            </command>
+            <command
+                  commandId="com.splab.priorj.ui.commands.newInstrumentation"
+                  icon="icons/inst.png"
+                  label="New Instrumentation"
+                  mnemonic="i"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.splab.priorj.ui.commands.openImportWizard"
+                  icon="icons/in.gif"
+                  label="Import Suites"
+                  style="push">
+            </command>
+            <separator
+                  name="com.splab.priorj.ui.separator"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="com.splab.priorj.ui.commands.configureLocalStorage"
+                  icon="icons/bd.png"
+                  label="Configure Local Base Path"
+                  mnemonic="b"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            class="com.splab.priorj.ui.wizards.NewWizardForInstrumentation"
+            icon="icons/inst.png"
+            id="com.splab.priorj.ui.wizardInstrumentation"
+            name="New  Instrumentation">
+      </wizard>
+      <wizard
+            class="com.splab.priorj.ui.wizards.NewWizardForPrioritization"
+            icon="icons/view.png"
+            id="com.splab.priorj.ui.wizardPrioritization"
+            name="New Prioritization">
+      </wizard>
+      <wizard
+            class="com.splab.priorj.ui.wizards.NewWizardForLocalStorage"
+            icon="icons/bd.png"
+            id="com.splab.priorj.ui.wizardLocalStorage"
+            name="Configure Local Storage">
+      </wizard>
+      <wizard
+            class="com.splab.priorj.ui.wizards.NewWizardForImportation"
+            icon="icons/classes.gif"
+            id="com.splab.priorj.ui.wizardForImportation"
+            name="Import Suite">
+      </wizard>
+   </extension>
+
+</plugin>
