@@ -7,7 +7,7 @@ import coverage.TestCase;
 /*
 * PriorJ: JUnit Test Case Prioritization.
 * 
-* Copyright (C) 2012-2013  Samuel T. C. Santos
+* Copyright (C) 2012-2013  Berg E. S. Cavalcante
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ import coverage.TestCase;
  * @author Berg Élisson.
  * @version 1.1
  */
-public class TestCaseEchelonComparable implements Comparable {
+public class TestCaseEchelon {
 
 	private double weight;
 	private TestCase testCase;
@@ -42,7 +42,7 @@ public class TestCaseEchelonComparable implements Comparable {
 	 * @param weight a weight for this test case.
 	 * @param testCase a test case.
 	 */
-	public TestCaseEchelonComparable(final double weight, final TestCase testCase,
+	public TestCaseEchelon(final double weight, final TestCase testCase,
 			final List<String> statementCoverage){
 		this.weight = weight;
 		this.testCase = testCase;
@@ -75,6 +75,13 @@ public class TestCaseEchelonComparable implements Comparable {
 	public double getScore() {
 		return score;
 	}
+	
+	/**
+	 * Set the score.
+	 */
+	public void setScore(final double score) {
+		this.score = score;
+	}
 
 	/**
 	 * Return the test case.
@@ -83,18 +90,6 @@ public class TestCaseEchelonComparable implements Comparable {
 	 */
 	public TestCase getTestCase() {
 		return testCase;
-	}
-
-	// TODO calculate the score.
-	private void calculateScore() {
-		
-	}
-	
-	public int compareTo(Object object) {
-		TestCaseEchelonComparable test = (TestCaseEchelonComparable) object;
-		Double obj = new Double(score);
-		Double objToCompare = new Double(test.getScore());
-		return obj.compareTo(objToCompare);
 	}
 
 	@Override

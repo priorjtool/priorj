@@ -7,12 +7,12 @@ import coverage.TestCase;
 public class StatementEchelonChanged {
 
 	private String statement;
-	private List<TestCase> testcases;
+	private List<TestCase> testCases;
 	
 	public StatementEchelonChanged(String statement, List<TestCase> testcases) {
 		super();
 		this.statement = statement;
-		this.testcases = testcases;
+		this.testCases = testcases;
 	}
 
 	public String getStatement() {
@@ -24,17 +24,21 @@ public class StatementEchelonChanged {
 	}
 
 	public List<TestCase> getTestcases() {
-		return testcases;
+		return testCases;
 	}
 
 	public void setTestcases(List<TestCase> testcases) {
-		this.testcases = testcases;
+		this.testCases = testcases;
 	}
 
+	public boolean containsTestCase(final TestCase testcase) {
+		return this.testCases.contains(testcase);
+	}
+	
 	@Override
 	public String toString() {
 		return "StatementEchelonChanged [statement=" + statement
-				+ ", testcases=" + testcases + "]";
+				+ ", testcases=" + testCases + "]";
 	}
 	
 }

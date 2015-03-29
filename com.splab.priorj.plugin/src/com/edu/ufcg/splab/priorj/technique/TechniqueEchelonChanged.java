@@ -94,69 +94,144 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
      * @param copyList
      * 				The testcase list to be analized.
      */
-    private void calulateWeight(List<TestCaseEchelonComparable> weightedList, List<TestCase> notWeightedList,
+    private void calulateWeight(List<TestCaseEchelon> weightedList, List<TestCase> notWeightedList,
     		final List<TestCase> copyList) {
     	for (TestCase testCase : copyList) {
         	List<String> statementCoverage = getWeight(testCase.getStatementsCoverage());
-        	if (statementCoverage.size() != 0.0)
-        		weightedList.add(new TestCaseEchelonComparable(getPercentage(statementCoverage.size()),
+        	if (statementCoverage.size() != 0.0) {
+        		weightedList.add(new TestCaseEchelon(getPercentage(statementCoverage.size()),
         				testCase, statementCoverage));
-        	else 
+        	}
+        	else {
         		notWeightedList.add(testCase);
+        	}
 		}
     }
     
+    /**
+     * Create the statement echelon list.
+     * 
+     * @param weightedList
+     * 				The weighted list.
+     * 
+     * @return List<StatementEchelonChanged>.
+     */
     private List<StatementEchelonChanged> createStatementEchelonList(
-    		final List<TestCaseEchelonComparable> weightedList) {
+    		final List<TestCaseEchelon> weightedList) {
     	List<StatementEchelonChanged> statements = new ArrayList<StatementEchelonChanged>();
     	
     	// Itera sobre todos os blocks afetados.
-    	int i = 0;
     	for (String block : affectedBlocks) {
     		List<TestCase> testCases = new ArrayList<TestCase>();
 			/*
 			 *  Itera sobre todos os casos de teste a fim de buscar os casos de teste
 			 *  que cobrem esse bloco afetado.
 			 */
-    		for (TestCaseEchelonComparable testCase : weightedList) {
+    		for (TestCaseEchelon testCase : weightedList) {
 				if (testCase.getStatementCoverage().contains(block)) {
 					testCases.add(testCase.getTestCase());
 				}
 			}
-    		statements.add(new StatementEchelonChanged(block, testCases));
-    		System.out.println(statements.get(i));
-    		i++;
+    		StatementEchelonChanged st = new StatementEchelonChanged(block, testCases);
+    		statements.add(st);
+    		System.out.println(st);
     	}
     	
     	return statements;
     }
     
-    private List<TestCaseEchelonComparable> calculateScore(final List<TestCaseEchelonComparable> weightedList) {
-    	List<StatementEchelonChanged> statements = createStatementEchelonList(weightedList);
+    private void getNumberOfOccurrences(final TestCase testCase, final List<StatementEchelonChanged> statementsChanged) {
     	
-    	return null;
+    }
+    
+    /**
+     * Calculate the score.
+     * 
+     * @param weightedList
+     * 				The weighted list.
+     */
+    private void calculateScore(final List<TestCaseEchelon> weightedList) {
+    	List<StatementEchelonChanged> statementsChanged = createStatementEchelonList(weightedList);
+    	List<String> controlList = new ArrayList<String>();
+    	
+    	for (TestCaseEchelon testCaseEchelon : weightedList) {
+    		double score = 0.0;
+        	for (StatementEchelonChanged change : statementsChanged) {
+    			for (TestCase test : change.getTestcases()) {
+    				if(!controlList.contains(change.getStatement()) && testCaseEchelon.getTestCase().equals(test)) {
+    					score += 1.0;
+    					controlList.add(change.getStatement());
+    				} else if(controlList.contains(change.getStatement()) && testCaseEchelon.getTestCase().equals(test)) {
+    					score += 0.5;
+    				}
+    			}
+    		}
+    		testCaseEchelon.setScore(score);
+		}
+    }
+    
+    /**
+     * Get the test cases signature of weighted list.
+     * 
+     * @param weightedList
+     * 				List<TestCase> weightedList.
+     * 
+     * @return List<String> with the signatureList.
+     */
+    private List<String> getSignatureWeightedList(final List<TestCaseEchelon> weightedList) {
+    	List<String> suiteList = new ArrayList<String>();
+    	for (TestCaseEchelon testCaseEchelon : weightedList) {
+    		String tcSig = testCaseEchelon.getTestCase().getSignature();
+			suiteList.add(tcSig);
+		}
+    	return suiteList;
+    }
+    
+    /**
+     * Get the test cases signature of not weighted list.
+     * 
+     * @param notWeightedList
+     * 				List<TestCase> notWeightedList.
+     * 
+     * @return List<String> with the signatureList.
+     */
+    private List<String> getSignatureNotWeightedList(final List<TestCase> notWeightedList) {
+    	List<String> suiteList = new ArrayList<String>();
+    	for (TestCase testCase : notWeightedList) {
+    		String tcSig = testCase.getSignature();
+			suiteList.add(tcSig);
+		}
+    	return suiteList;
     }
     
 	@Override
 	public List<String> prioritize(List<TestCase> tests)throws EmptySetOfTestCaseException {
 		List<TestCase> copyList = new ArrayList<TestCase>(tests);
-        List<String> suiteList = new ArrayList<String>();
-        ArrayList<TestCaseEchelonComparable> weightedList = new ArrayList<TestCaseEchelonComparable>();
+        ArrayList<TestCaseEchelon> weightedList = new ArrayList<TestCaseEchelon>();
         ArrayList<TestCase> notWeightedList = new ArrayList<TestCase>();
         
         calulateWeight(weightedList, notWeightedList, copyList);
         
+        Collections.sort(weightedList, new EchelonComparator(EchelonComparator.BY_WEIGHT));
+        Collections.reverse(weightedList);
         System.out.println("Weighted:");
-        for (TestCaseEchelonComparable testCase : weightedList) {
+        for (TestCaseEchelon testCase : weightedList) {
 			System.out.println(testCase);
-		}
-        System.out.println("Not Weighted:");
-        for (TestCase testCase : notWeightedList) {
-        	System.out.println(testCase.getName());
 		}
         
         calculateScore(weightedList);
         
-    	return null;
+        Collections.sort(weightedList, new EchelonComparator(EchelonComparator.BY_SCORE));
+        Collections.reverse(weightedList);
+        System.out.println("By Score:");
+        for (TestCaseEchelon testCaseEchelon : weightedList) {
+			System.out.println(testCaseEchelon);
+		}
+        
+        List<String> suiteList = getSignatureWeightedList(weightedList);
+    	this.weightList = new ArrayList<String> (suiteList);
+        this.notWeightList = new ArrayList<String>(getSignatureNotWeightedList(notWeightedList));
+    	suiteList.addAll(this.notWeightList);
+        return suiteList;
     }
 }

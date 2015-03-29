@@ -239,7 +239,7 @@ public class PrioritizationWizardPage extends WizardPage {
 	
 	private void createButtonRBA() {
 		btnCbRBA = new Button(groupCheckboxes, SWT.CHECK);
-		btnCbRBA.setText("RBA");
+		btnCbRBA.setText("Echelon Changed");
 		
 		btnCbRBA.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e){
