@@ -20,11 +20,8 @@ package com.edu.ufcg.splab.priorj.technique;
 */
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import coverage.TestCase;
 
@@ -120,7 +117,7 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
     		final List<TestCaseEchelon> weightedList) {
     	List<StatementEchelonChanged> statements = new ArrayList<StatementEchelonChanged>();
     	
-    	// Itera sobre todos os blocks afetados.
+    	// Itera sobre todos os blocos afetados.
     	for (String block : affectedBlocks) {
     		List<TestCase> testCases = new ArrayList<TestCase>();
 			/*
@@ -140,10 +137,6 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
     	return statements;
     }
     
-    private void getNumberOfOccurrences(final TestCase testCase, final List<StatementEchelonChanged> statementsChanged) {
-    	
-    }
-    
     /**
      * Calculate the score.
      * 
@@ -151,21 +144,30 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
      * 				The weighted list.
      */
     private void calculateScore(final List<TestCaseEchelon> weightedList) {
-    	List<StatementEchelonChanged> statementsChanged = createStatementEchelonList(weightedList);
+//    	List<StatementEchelonChanged> statementsChanged = createStatementEchelonList(weightedList);
     	List<String> controlList = new ArrayList<String>();
+    	double incFactor = 1.0 / (double) this.affectedBlocks.size();
+    	double decFactor = 1.0 / (2.0 * this.affectedBlocks.size());
     	
     	for (TestCaseEchelon testCaseEchelon : weightedList) {
-    		double score = 0.0;
-        	for (StatementEchelonChanged change : statementsChanged) {
-    			for (TestCase test : change.getTestcases()) {
-    				if(!controlList.contains(change.getStatement()) && testCaseEchelon.getTestCase().equals(test)) {
-    					score += 1.0;
-    					controlList.add(change.getStatement());
-    				} else if(controlList.contains(change.getStatement()) && testCaseEchelon.getTestCase().equals(test)) {
-    					score += 0.5;
-    				}
+    		double score = testCaseEchelon.getWeight();
+    		
+    		// Primeiro elemento é quem dita a lista de controle.
+    		if(weightedList.get(0).equals(testCaseEchelon)) {
+    			score += testCaseEchelon.getStatementCoverage().size()*incFactor;
+    			controlList = testCaseEchelon.getStatementCoverage();
+    			testCaseEchelon.setScore(score);
+    			continue;
+    		}
+    		
+    		for (String change : testCaseEchelon.getStatementCoverage()) {
+    			if(controlList.contains(change)) {
+    				score -= decFactor;
+    			} else {
+    				score += incFactor;
     			}
     		}
+    		
     		testCaseEchelon.setScore(score);
 		}
     }
