@@ -54,7 +54,7 @@ import com.java.io.JavaIO;
  * 
  * @version 1.0.0
  */
-public class AJDTHandler {
+public class AJDTHandler  {
 
 	private IWorkspace workspace;
 	private IWorkspaceRoot root;
@@ -82,9 +82,11 @@ public class AJDTHandler {
 	/**
 	 * Libraries to coverage and persistence.
 	 */
-	private static final String  coverageLibrary = "coverage-v1.0.6.jar";
+	private static final String  COVERAGE_LIBRARY = "coverage-v1.0.6.jar";
 	
-	private static final String  javaioLibrary = "javaio-v1.0.4.jar";
+	private static final String  JAVA_IO_LIBRARY = "javaio-v1.0.4.jar";
+	
+	private static final String  OBJECT_DB_LIBRARY = "objectdb.jar";
 	
 	/**
 	 * Our build implementation
@@ -100,7 +102,7 @@ public class AJDTHandler {
 	/**
 	 * Constructor default to <code>PriorJCoreHandler</code>
 	 */
-	public AJDTHandler() {
+	public AJDTHandler()  {
 		//Get the root of the workspace
 		workspace = ResourcesPlugin.getWorkspace();
 		root = workspace.getRoot();	
@@ -116,12 +118,12 @@ public class AJDTHandler {
 	 * 
 	 * @throws CoreException  
 	 */
-	public IJavaProject createProject(String projectName) throws CoreException {
+	public IJavaProject createProject(String projectName) throws CoreException  {
 		IProject project = root.getProject(projectName);
 		project.create(null);
 		project.open(null);
 		IProjectDescription description = project.getDescription();
-		description.setNatureIds( new String [] {
+		description.setNatureIds( new String []  {
 				JavaCore.NATURE_ID
 		});
 		project.setDescription(description, null);
@@ -143,16 +145,16 @@ public class AJDTHandler {
 	}
 	
 	
-//	private IProject createTempProject(IProject projDelta) throws CoreException {
+//	private IProject createTempProject(IProject projDelta) throws CoreException  {
 //		IFolder libFolder = projDelta.getFolder("lib");
 //		IResource[] members = null;
-//		try {
+//		try  {
 //			members = libFolder.members();
-//		} catch (ResourceException e) {
-//			try {
+//		} catch (ResourceException e)  {
+//			try  {
 //				libFolder = projDelta.getFolder("libs");
 //				members = libFolder.members();
-//			} catch (Exception e2) {
+//			} catch (Exception e2)  {
 //				// TODO: handle exception
 //			}
 //		}
@@ -165,7 +167,7 @@ public class AJDTHandler {
 //
 //		//set the Java nature
 //		IProjectDescription description = project.getDescription();
-//		description.setNatureIds(new String[] { JavaCore.NATURE_ID});
+//		description.setNatureIds(new String[]  { JavaCore.NATURE_ID});
 //	
 //
 //		//create the project
@@ -183,9 +185,9 @@ public class AJDTHandler {
 //		folderLib.create(true, true, null);
 //		
 //		ArrayList<IClasspathEntry> libEntries = new ArrayList<IClasspathEntry>();
-//		if (members != null){
-//			for (IResource iResource : members) {
-//				if (iResource.getName().endsWith(".jar") || iResource.getName().endsWith(".zip")){
+//		if (members != null) {
+//			for (IResource iResource : members)  {
+//				if (iResource.getName().endsWith(".jar") || iResource.getName().endsWith(".zip")) {
 //					iResource.copy(new Path (folderLib.getFullPath().toString()+SEPARATOR+iResource.getName()), true, null);
 //
 //					IClasspathEntry libEntry = JavaCore.newLibraryEntry(
@@ -201,7 +203,7 @@ public class AJDTHandler {
 //
 //		//set the build path
 //		IClasspathEntry[] buildPath = new IClasspathEntry[libEntries.size()+2];
-//		for (int i = 0; i < buildPath.length; i++) {
+//		for (int i = 0; i < buildPath.length; i++)  {
 //			if (i == 0)
 //				buildPath[0] = JavaCore.newSourceEntry(project.getFullPath().append("src"));
 //			else if (i == 1)
@@ -218,23 +220,23 @@ public class AJDTHandler {
 //
 //		final ASTParser parser = ASTParser.newParser(AST.JLS3); 
 //		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-//		for (IPackageFragment fragTarg : javaProjectDelta.getPackageFragments()) {
-//			if (fragTarg.getCompilationUnits().length > 0 ){
+//		for (IPackageFragment fragTarg : javaProjectDelta.getPackageFragments())  {
+//			if (fragTarg.getCompilationUnits().length > 0 ) {
 //				IPackageFragment fragment = srcFolder.createPackageFragment(
 //						fragTarg.getElementName(), true, null);
-//				for (ICompilationUnit cuTarg : fragTarg.getCompilationUnits()) {
+//				for (ICompilationUnit cuTarg : fragTarg.getCompilationUnits())  {
 //					if (cuTarg.getElementName().toString().equals("Init.java"))
 //						System.out.println();
 //					IResource resource = cuTarg.getUnderlyingResource();
-//					if (resource.getType() == IResource.FILE) {
+//					if (resource.getType() == IResource.FILE)  {
 //						IFile ifile = (IFile) resource;
 //						String path = ifile.getRawLocation().toString();
 //						BufferedReader br;
-//						try {
+//						try  {
 //							br = new BufferedReader(new FileReader(path));
 //							String line ;
 //							String str = "";
-//							while ((line = br.readLine()) != null) {
+//							while ((line = br.readLine()) != null)  {
 //								if (line.equals(""))
 //									str+= "\n";
 //								else str+=line+"\n";
@@ -246,10 +248,10 @@ public class AJDTHandler {
 //
 //							ICompilationUnit cu = fragment.createCompilationUnit(cuTarg.getElementName(), str,
 //									false, null);
-//						} catch (FileNotFoundException e) {
+//						} catch (FileNotFoundException e)  {
 //							// TODO Auto-generated catch block
 //							e.printStackTrace();
-//						} catch (IOException e) {
+//						} catch (IOException e)  {
 //							// TODO Auto-generated catch block
 //							e.printStackTrace();
 //						}
@@ -270,7 +272,7 @@ public class AJDTHandler {
 	 * @throws CoreException 
 	 * @throws IOException 
 	 */
-	public IJavaProject copyProject(String originalProjectName, String copyProjectName) throws CoreException, IOException{
+	public IJavaProject copyProject(String originalProjectName, String copyProjectName) throws CoreException, IOException {
 		IJavaProject copyProject = createProject(copyProjectName);
 		String origin = getFullProjectPath(originalProjectName);
 		String destiny = getFullProjectPath(copyProjectName);
@@ -288,6 +290,8 @@ public class AJDTHandler {
 		addAjrtToBuildPath(copyProject);
 		addCoverageLibraryToBuildPath(copyProject);
 		addJavaIOLibraryToBuildPath(copyProject);
+//		addObjectDBLibraryToBuildPath(copyProject);
+		
 		//addAjrtToBuildPath(copyProject);
 		//addJUnit4ToBuildPath(copyProject);
 		//addCoverageLibraryToBuildPath(copyProject);
@@ -299,17 +303,17 @@ public class AJDTHandler {
 		return copyProject;		
 	}
 	
-	private void addJavaIOLibraryToBuildPath(IJavaProject javaProject) throws JavaModelException {
+	private void addJavaIOLibraryToBuildPath(IJavaProject javaProject) throws JavaModelException  {
 		IClasspathEntry [] originalCP = javaProject.getRawClasspath();
-		IClasspathEntry lib = JavaCore.newLibraryEntry(new Path("/"+javaProject.getElementName()+"/lib/" + javaioLibrary),null, null);
+		IClasspathEntry lib = JavaCore.newLibraryEntry(new Path("/"+javaProject.getElementName()+"/lib/" + JAVA_IO_LIBRARY),null, null);
 		boolean found = false;
-		for (int i=0; i< originalCP.length; i++){
-			if (originalCP[i].getPath().equals(lib.getPath())){
+		for (int i=0; i< originalCP.length; i++) {
+			if (originalCP[i].getPath().equals(lib.getPath())) {
 				found = true;
 				break;
 			}
 		}
-		if (!found){
+		if (!found) {
 			int originalCPLength = originalCP.length;
 			IClasspathEntry [] newCP = new IClasspathEntry[originalCPLength+1];
 			System.arraycopy(originalCP, 0, newCP, 0, originalCPLength);
@@ -325,7 +329,7 @@ public class AJDTHandler {
 	 * @param destiny
 	 * @throws IOException
 	 */
-	private void copy(String origin, String destiny) throws IOException{
+	private void copy(String origin, String destiny) throws IOException {
 		JavaIO.copyAll(new File(origin), new File(destiny),true);
 	}
 	
@@ -335,11 +339,11 @@ public class AJDTHandler {
 	 * @param projectName
 	 * @return
 	 */
-	public IClasspathEntry [] createDefaultBuildPath(String projectName) {
-		IClasspathEntry [] buildPath = {
+	public IClasspathEntry [] createDefaultBuildPath(String projectName)  {
+		IClasspathEntry [] buildPath =  {
 				JavaRuntime.getDefaultJREContainerEntry() ,
-				JavaCore.newLibraryEntry(new Path("/"+projectName+"/lib/" + coverageLibrary),null, null),
-				JavaCore.newLibraryEntry(new Path("/"+projectName+"/lib/" + javaioLibrary),null, null),
+				JavaCore.newLibraryEntry(new Path("/"+projectName+"/lib/" + COVERAGE_LIBRARY),null, null),
+				JavaCore.newLibraryEntry(new Path("/"+projectName+"/lib/" + JAVA_IO_LIBRARY),null, null),
 				junit4Entry
 		};
 		return buildPath;
@@ -352,7 +356,7 @@ public class AJDTHandler {
 	 * 
 	 * @throws CoreException 
 	 */
-	public void deleteProject(String projectName) throws CoreException{
+	public void deleteProject(String projectName) throws CoreException {
 		IProject project = getProject(projectName);
 		project.delete(true, true, null);
 	}
@@ -363,7 +367,7 @@ public class AJDTHandler {
 	 * @param project
 	 * @throws CoreException
 	 */
-	public static void convertToAspectJProject(IProject project) throws CoreException{
+	public static void convertToAspectJProject(IProject project) throws CoreException {
 		AJDTUtils.addAspectJNature(project, false);
 	}
 	
@@ -372,13 +376,13 @@ public class AJDTHandler {
 	 *   
 	 * @param javaProject
 	 */
-	public static void addAjrtToBuildPath(IJavaProject javaProject){
-		try {
+	public static void addAjrtToBuildPath(IJavaProject javaProject) {
+		try  {
 			IClasspathEntry [] originalCP = javaProject.getRawClasspath();
 			IPath ajrtPath = new Path(AspectJPlugin.ASPECTJRT_CONTAINER);
 			addNewContainerClasspathEntry(javaProject, originalCP, ajrtPath);	
 		}
-		catch(JavaModelException e){
+		catch(JavaModelException e) {
 			e.printStackTrace();
 		}
 	}
@@ -390,17 +394,17 @@ public class AJDTHandler {
 	 * @param sourceFolderName
 	 * @throws JavaModelException 
 	 */
-	public static void addSourceFolderEntryToBuildPath(IJavaProject javaProject, String sourceFolderName) throws JavaModelException{
+	public static void addSourceFolderEntryToBuildPath(IJavaProject javaProject, String sourceFolderName) throws JavaModelException {
 		IClasspathEntry [] originalCP = javaProject.getRawClasspath();
 		IPath sourceFolderPath = new Path(javaProject.getProject().getFullPath()+"/"+sourceFolderName);
 		boolean found = false;
-		for (int i=0; i< originalCP.length; i++){
-			if (originalCP[i].getPath().lastSegment().equals(sourceFolderPath.lastSegment())){
+		for (int i=0; i< originalCP.length; i++) {
+			if (originalCP[i].getPath().lastSegment().equals(sourceFolderPath.lastSegment())) {
 				found = true;
 				break;
 			}
 		}
-		if (!found){
+		if (!found) {
 			IClasspathEntry entry = JavaCore.newSourceEntry(sourceFolderPath);
 			int originalCPLength = originalCP.length;
 			IClasspathEntry [] newCP = new IClasspathEntry[originalCPLength+1];
@@ -417,7 +421,7 @@ public class AJDTHandler {
 	 * @param javaProject
 	 * @throws JavaModelException  
 	 */
-	public static void addJUnit4ToBuildPath(IJavaProject javaProject) throws JavaModelException {
+	public static void addJUnit4ToBuildPath(IJavaProject javaProject) throws JavaModelException  {
 			IClasspathEntry [] originalCP = javaProject.getRawClasspath();
 			addNewContainerClasspathEntry(javaProject, originalCP,junit4Path);
 	}
@@ -430,15 +434,15 @@ public class AJDTHandler {
 	 * @param cpEntry
 	 * @throws JavaModelException
 	 */
-	private static void addNewContainerClasspathEntry(IJavaProject javaProject, IClasspathEntry[] originalCP, IPath cpEntry) throws JavaModelException {
+	private static void addNewContainerClasspathEntry(IJavaProject javaProject, IClasspathEntry[] originalCP, IPath cpEntry) throws JavaModelException  {
 		boolean found = false;
-		for (int i=0; i< originalCP.length; i++){
-			if (originalCP[i].getPath().equals(cpEntry)){
+		for (int i=0; i< originalCP.length; i++) {
+			if (originalCP[i].getPath().equals(cpEntry)) {
 				found = true;
 				break;
 			}
 		}
-		if (!found){
+		if (!found) {
 			IClasspathEntry entry = JavaCore.newContainerEntry(cpEntry, false);
 			int originalCPLength = originalCP.length;
 			IClasspathEntry [] newCP = new IClasspathEntry[originalCPLength+1];
@@ -454,17 +458,37 @@ public class AJDTHandler {
 	 * @param javaProject
 	 * @throws JavaModelException
 	 */
-	public static void addCoverageLibraryToBuildPath(IJavaProject javaProject) throws JavaModelException{
+	public static void addCoverageLibraryToBuildPath(IJavaProject javaProject) throws JavaModelException  {
 		IClasspathEntry [] originalCP = javaProject.getRawClasspath();
-		IClasspathEntry lib = JavaCore.newLibraryEntry(new Path("/"+javaProject.getElementName()+"/lib/" + coverageLibrary),null, null);
+		IClasspathEntry lib = JavaCore.newLibraryEntry(new Path("/"+javaProject.getElementName()+"/lib/" + COVERAGE_LIBRARY),null, null);
 		boolean found = false;
-		for (int i=0; i< originalCP.length; i++){
-			if (originalCP[i].getPath().equals(lib.getPath())){
+		for (int i = 0; i < originalCP.length; i++)  {
+			if (originalCP[i].getPath().equals(lib.getPath()))  {
 				found = true;
 				break;
 			}
 		}
-		if (!found){
+		if (!found) {
+			int originalCPLength = originalCP.length;
+			IClasspathEntry [] newCP = new IClasspathEntry[originalCPLength+1];
+			System.arraycopy(originalCP, 0, newCP, 0, originalCPLength);
+			newCP[originalCPLength] = lib;
+			javaProject.setRawClasspath(newCP, new NullProgressMonitor());	
+		}
+		
+	}
+	
+	public static void addObjectDBLibraryToBuildPath(IJavaProject javaProject) throws JavaModelException  {
+		IClasspathEntry [] originalCP = javaProject.getRawClasspath();
+		IClasspathEntry lib = JavaCore.newLibraryEntry(new Path("/"+javaProject.getElementName()+"/lib/" + OBJECT_DB_LIBRARY),null, null);
+		boolean found = false;
+		for (int i=0; i< originalCP.length; i++) {
+			if (originalCP[i].getPath().equals(lib.getPath())) {
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
 			int originalCPLength = originalCP.length;
 			IClasspathEntry [] newCP = new IClasspathEntry[originalCPLength+1];
 			System.arraycopy(originalCP, 0, newCP, 0, originalCPLength);
@@ -480,26 +504,26 @@ public class AJDTHandler {
 	 * @param projectName
 	 * @throws CoreException
 	 */
-	public void copyLibrariesDependencies(String projectName) throws CoreException{
+	public void copyLibrariesDependencies(String projectName) throws CoreException {
 		IFolder libFolder = getProject(projectName).getFolder("lib");
 		IFolder reportFolder = getProject(projectName).getFolder("report");
-		try{
-			if (libFolder.exists()){
+		try {
+			if (libFolder.exists()) {
 				copyLibraries(libFolder);
-			}else{
+			}else {
 				libFolder.create(true, false, null);
 				copyLibraries(libFolder);
 			}
-			if(reportFolder.exists()){
+			if(reportFolder.exists()) {
 				copyReportResourcesTo(reportFolder);
 			}
-			else{
+			else {
 				reportFolder.create(true, false, null);
 				copyReportResourcesTo(reportFolder);
 			}
 			loacateFolderSrcToInsertAspectCode(projectName);
 		}
-		catch(IOException e){
+		catch(IOException e) {
 			e.printStackTrace();
 		}
 		
@@ -512,24 +536,24 @@ public class AJDTHandler {
 	 * @throws CoreException 
 	 * @throws IOException 
 	 */
-	private void loacateFolderSrcToInsertAspectCode(String projectName) throws CoreException, IOException{
+	private void loacateFolderSrcToInsertAspectCode(String projectName) throws CoreException, IOException {
 		IJavaProject javaProject = JavaCore.create(getProject(projectName));
-		for (IClasspathEntry entry : javaProject.getRawClasspath()){
+		for (IClasspathEntry entry : javaProject.getRawClasspath()) {
 			//only at the package from the source folder
-			if (entry.getEntryKind()== IClasspathEntry.CPE_SOURCE){
+			if (entry.getEntryKind()== IClasspathEntry.CPE_SOURCE) {
 				String []  segments = entry.getPath().segments();
 				String folderName="";
-				for (int i=1; i<segments.length; i++){
+				for (int i=1; i<segments.length; i++) {
 					folderName += segments[i];
 					if (i<segments.length-1)
 						folderName += JavaIO.SEPARATOR;
 				}
 				IFolder srcFolder = getProject(projectName).getFolder(folderName);
-				if (!srcFolder.exists()){
+				if (!srcFolder.exists()) {
 					srcFolder.create(true, false, null);
 					copyAspectFile(srcFolder);
 				}
-				else{
+				else {
 					copyAspectFile(srcFolder);
 				}
 				break;
@@ -558,7 +582,7 @@ public class AJDTHandler {
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	public static void copyAspectFile(IFolder srcFolder) throws IOException, CoreException{
+	public static void copyAspectFile(IFolder srcFolder) throws IOException, CoreException {
 		URL url;
 		Bundle bundle = Platform.getBundle("com.splab.priorj.plugin");
 		url = bundle.getEntry("data/"+ASPECT_FILE);
@@ -576,20 +600,29 @@ public class AJDTHandler {
 	 * Bundle bundle = Platform.getBundle("com.splab.priorj.plugin");
 	 * url = bundle.getEntry("lib/"+library);
 	 */
-	private void copyLibraries(IFolder libFolder) throws IOException, CoreException{
+	private void copyLibraries(IFolder libFolder) throws IOException, CoreException {
 		URL url;
 		Bundle bundle = Platform.getBundle("com.splab.priorj.plugin");
-		url = bundle.getEntry("lib/"+coverageLibrary);
-		IFile newLib = libFolder.getFile(coverageLibrary);
+		// Copy the Coverage lib from PriorJ plugin.
+		url = bundle.getEntry("lib/" + COVERAGE_LIBRARY);
+		IFile newLib = libFolder.getFile(COVERAGE_LIBRARY);
 		InputStream fileStream = url.openConnection().getInputStream();
 		newLib.create(fileStream, false, null);
 		fileStream.close();
 		
-		url = bundle.getEntry("lib/"+javaioLibrary);
-		newLib = libFolder.getFile(javaioLibrary);
+		// Copy the JavaIO lib from PriorJ plugin.
+		url = bundle.getEntry("lib/" + JAVA_IO_LIBRARY);
+		newLib = libFolder.getFile(JAVA_IO_LIBRARY);
 		fileStream = url.openConnection().getInputStream();
 		newLib.create(fileStream, false, null);
 		fileStream.close();
+		
+		// Copy the ObjectDB lib from PriorJ plugin.
+//		url = bundle.getEntry("lib/" + OBJECT_DB_LIBRARY);
+//		newLib = libFolder.getFile(OBJECT_DB_LIBRARY);
+//		fileStream = url.openConnection().getInputStream();
+//		newLib.create(fileStream, false, null);
+//		fileStream.close();
 	}
 	/**
 	 * Copying Resource to Reports.
@@ -597,7 +630,7 @@ public class AJDTHandler {
 	 * @throws IOException 
 	 * @throws CoreException 
 	 */
-	public void copyReportResourcesTo(IFolder reportFolder) throws IOException, CoreException {
+	public void copyReportResourcesTo(IFolder reportFolder) throws IOException, CoreException  {
 		URL url;
 		Bundle bundle = Platform.getBundle("com.splab.priorj.plugin");
 		url = bundle.getEntry("data/report.zip");
@@ -618,13 +651,13 @@ public class AJDTHandler {
      * @param zipFile input zip file
      * @param output zip file output folder
      */
-    private void unZipIt(String zipFileName, String outputFolder){
-		try {
+    private void unZipIt(String zipFileName, String outputFolder) {
+		try  {
 			// Initiate ZipFile object with the path/name of the zip file.
 			ZipFile zipFile = new ZipFile(zipFileName);
 			// Extracts all files to the path specified
 			zipFile.extractAll(outputFolder);
-		} catch (ZipException e) {
+		} catch (ZipException e)  {
 			e.printStackTrace();
 		}
     }    
@@ -635,9 +668,9 @@ public class AJDTHandler {
 	 * @param filePath
 	 * @throws PartInitException 
 	 */
-	public void openFileInEditorView(String filePath) throws PartInitException{
+	public void openFileInEditorView(String filePath) throws PartInitException {
 		File fileToOpen = new File(filePath);
-		if(fileToOpen.exists() && fileToOpen.isFile()){
+		if(fileToOpen.exists() && fileToOpen.isFile()) {
 			IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI());
 			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		    IDE.openEditorOnFileStore(page, fileStore);
@@ -646,7 +679,7 @@ public class AJDTHandler {
 	
 	
 	
-	private void refresh(String projectName) throws CoreException{
+	private void refresh(String projectName) throws CoreException {
 		IProject project = getProject(projectName);
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
@@ -658,7 +691,7 @@ public class AJDTHandler {
 	 * @param projectName
 	 * @throws CoreException
 	 */
-	public void full(IProject project, String projectName) throws CoreException{
+	public void full(IProject project, String projectName) throws CoreException {
 		createProject(projectName);
 		builder.fullBuild(project, null);		
 	}
@@ -668,7 +701,7 @@ public class AJDTHandler {
 	 * 
 	 * @return An Array of IProject 
 	 */
-	public IProject [] getProjects(){
+	public IProject [] getProjects() {
 		return root.getProjects();
 	}
 	
@@ -677,7 +710,7 @@ public class AJDTHandler {
 	 * 
 	 * @return
 	 */
-	public ProjectVisitor getProjectVisitor(){
+	public ProjectVisitor getProjectVisitor() {
 		return visitor;
 	}
 	
@@ -686,7 +719,7 @@ public class AJDTHandler {
 	 * 
 	 * @return the project name.
 	 */
-	public IProject getProject(String projectName){
+	public IProject getProject(final String projectName) {
 		return root.getProject(projectName);
 	}
 	
@@ -696,7 +729,7 @@ public class AJDTHandler {
 	 * @param projectName
 	 * @return
 	 */
-	public boolean existProject(String projectName){
+	public boolean existProject(final String projectName) {
 		return getProject(projectName).exists();
 	}
 	
@@ -706,7 +739,7 @@ public class AJDTHandler {
 	 * @param projectName
 	 * @return
 	 */
-	public String getFullProjectPath(String projectName){
+	public String getFullProjectPath(final String projectName) {
 		return ResourcesPlugin.getWorkspace().getRoot().getProject(projectName).getLocation().toOSString();
 	}
 	
@@ -717,10 +750,10 @@ public class AJDTHandler {
 	 * @param folderName
 	 * @throws CoreException 
 	 */
-	public IFolder createFolder(String projectName, String folderName) throws CoreException {
+	public IFolder createFolder(final String projectName, final String folderName) throws CoreException  {
 		IProject myproject = getProject(projectName);
 		IFolder folder = myproject.getFolder(folderName);
-		if (!folder.exists()){
+		if (!folder.exists()) {
 			folder.create(true, true, null);
 		}
 		return folder;
@@ -733,10 +766,10 @@ public class AJDTHandler {
 	 * @return
 	 * @throws CoreException
 	 */
-	public IFolder createSourceFolder(String projectName, String folderName) throws CoreException {
+	public IFolder createSourceFolder(final String projectName, final String folderName) throws CoreException  {
 		IProject myproject = getProject(projectName);
 		IFolder folder = myproject.getFolder(folderName);
-		if (!folder.exists()){
+		if (!folder.exists()) {
 			folder.create(true, true, null);
 		}
 		addSourceFolderEntryToBuildPath(JavaCore.create(myproject), folderName);
@@ -752,7 +785,8 @@ public class AJDTHandler {
 	 * @param packageName
 	 * @throws JavaModelException
 	 */
-	public IPackageFragment createPackage(String projectName, String sourceFolderName, String packageName) throws JavaModelException {
+	public IPackageFragment createPackage(final String projectName, final String sourceFolderName, 
+			final String packageName) throws JavaModelException  {
 		IProject project = getProject(projectName);
 		IFolder folder = project.getFolder(sourceFolderName);
 		IJavaProject javaProject = JavaCore.create(project);
@@ -771,7 +805,8 @@ public class AJDTHandler {
 	 * @param sourceCode
 	 * @throws JavaModelException 
 	 */
-	public ICompilationUnit createCompilationUnit(String projectName, String sourceFolderName, String packageName, String className, String sourceCode) throws JavaModelException {
+	public ICompilationUnit createCompilationUnit(final String projectName, final String sourceFolderName, 
+			final String packageName, final String className, final String sourceCode) throws JavaModelException  {
 		IProject project = getProject(projectName);
 		IFolder folder = project.getFolder(sourceFolderName);
 		IJavaProject javaProject = JavaCore.create(project);
@@ -803,27 +838,27 @@ public class AJDTHandler {
 	 * @param buildPath
 	 * @param entries
 	 */
-	private static void doMerge(IClasspathEntry[] buildPath,List<IClasspathEntry> entries) {
+	private static void doMerge(IClasspathEntry[] buildPath,List<IClasspathEntry> entries)  {
 		List<String> merged = new ArrayList<String>();
-		for(IClasspathEntry entry : buildPath){	
-			if (entry.equals(junit3Entry) || entry.equals(junit4Entry) ){
+		for(IClasspathEntry entry : buildPath) {	
+			if (entry.equals(junit3Entry) || entry.equals(junit4Entry) ) {
 				if (!entries.contains(junit3Entry) && !entries.contains(junit4Entry))
 					entries.add(entry);
 			}
-			else{
-				if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY || entry.getEntryKind() == IClasspathEntry.CPE_SOURCE){
+			else {
+				if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY || entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
 					boolean found = false;
-					for (IClasspathEntry cpe : entries){
-						if (cpe.getPath().lastSegment().equals(entry.getPath().lastSegment())){
+					for (IClasspathEntry cpe : entries) {
+						if (cpe.getPath().lastSegment().equals(entry.getPath().lastSegment())) {
 							found = true;
 							break;
 						}
 					}
-					if (!found){
+					if (!found) {
 						entries.add(entry);
 					}
 				}
-				else if (!entries.contains(entry)){
+				else if (!entries.contains(entry)) {
 					merged.add(entry.getPath().toOSString());
 					entries.add(entry); 
 				}
@@ -837,14 +872,14 @@ public class AJDTHandler {
 	 * @param key
 	 * @param value
 	 */
-	public void saveInPreferences(String key, String value){
+	public void saveInPreferences(String key, String value) {
 		Preferences preferences = InstanceScope.INSTANCE.getNode("com.edu.ufcg.splab.priorj");
 		Preferences sub1 = preferences.node("node1");
 	    sub1.put(key, value);
-        try {
+        try  {
           // forces the application to save the preferences
           preferences.flush();
-        } catch (BackingStoreException e2) {
+        } catch (BackingStoreException e2)  {
           e2.printStackTrace();
         }
 	}
@@ -854,7 +889,7 @@ public class AJDTHandler {
 	 * @param key
 	 * @return
 	 */
-	public String getFromPreferences(String key){
+	public String getFromPreferences(String key) {
 		Preferences preferences = InstanceScope.INSTANCE.getNode("com.edu.ufcg.splab.priorj");
 	    Preferences sub1 = preferences.node("node1");
 	    return sub1.get(key, "default");

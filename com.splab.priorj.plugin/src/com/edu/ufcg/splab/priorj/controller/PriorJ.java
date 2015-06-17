@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
+
 import com.edu.ufcg.splab.core.Difference;
 import com.edu.ufcg.splab.core.InstrumentClass;
 import com.edu.ufcg.splab.coverage.*;
@@ -13,6 +17,7 @@ import com.edu.ufcg.splab.priorj.report.GenerateExecutionOrderReport;
 import com.edu.ufcg.splab.priorj.report.GenerateTestSuite;
 import com.edu.ufcg.splab.priorj.report.GenerateTestSuiteForJUnit4;
 import com.edu.ufcg.splab.priorj.technique.*;
+import com.edu.ufcg.splab.tests.priorj.coverage.dao.AllTests;
 import com.java.io.JavaIO;
 
 import coverage.TestCase;
@@ -130,10 +135,18 @@ public class PriorJ {
 	 */
 	public List<String> getSelection(int suiteSize, List<String> allTests){
 		int total = allTests.size();
-		int selectedSize  = total * suiteSize/100; 
+		int selectedSize  = total * suiteSize/100;
 		return allTests.subList(0, selectedSize);
 	}
-
+// TODO execução da suite automaticamente no momento em que acabar a instrumentação.
+//	public int runSuite(final Class<?> clazz) {
+//		Result result = JUnitCore.runClasses(clazz);
+//	      for (Failure failure : result.getFailures()) {
+//	         System.out.println(failure.toString());
+//	      }
+//	      return result.getRunCount();
+//	}
+	
 	/**
 	 * 
 	 * @param totalMethodCoverage
@@ -156,7 +169,6 @@ public class PriorJ {
 			Technique technique = creator.create(typeOfTechnique);
 			return technique.prioritize(allTests);
 		}
-		
 	}
 
 	public List<String> prioritizeExp(int typeOfTechnique, List<TestCase> allTests) throws EmptySetOfTestCaseException {
@@ -377,6 +389,8 @@ public class PriorJ {
 	 */
 	public List<String> checkDifference(String filePath, String oldFilePath) throws Exception {
 		Difference difference = new Difference(filePath, oldFilePath);
+		System.out.println("Filepath = " + filePath);
+		System.out.println("OldFilepath = " + oldFilePath);
 		difference.diff();
 		List<String> affected = difference.getStatementsDiff();
 		return affected;

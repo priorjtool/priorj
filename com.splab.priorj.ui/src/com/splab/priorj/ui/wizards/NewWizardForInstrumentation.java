@@ -38,7 +38,7 @@ public class NewWizardForInstrumentation extends Wizard implements INewWizard {
 		setDialogSettings(instrumentationSettings);
 	}
 	
-	public void addPages(){
+	public void addPages() {
 		setWindowTitle("New Instrumentation");
 		instrumentationPage = new SelectionInstrumentationWizardPage();
 		addPage(instrumentationPage);

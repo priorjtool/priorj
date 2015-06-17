@@ -24,7 +24,7 @@ public class DifferenceVisitor implements IResourceProxyVisitor  {
 	private List<String> differences;
 	private String projectName;
 	private PathGenerator pathGenerator;
-	
+
 	/**
 	 * Checking difference between Projects.
 	 * 
@@ -37,8 +37,8 @@ public class DifferenceVisitor implements IResourceProxyVisitor  {
 		this.differences = new ArrayList<String>();
 		this.pathGenerator = new PathGenerator();
 	}
-	
-	
+
+
 	@Override
 	public boolean visit(IResourceProxy proxy) throws CoreException {
 		String name = proxy.getName();
@@ -62,18 +62,20 @@ public class DifferenceVisitor implements IResourceProxyVisitor  {
 	private void checkFile(IFile file) {
 		String newVersionProjectName = file.getProject().getName();
 		String filePath = file.getLocation().toOSString();
-//		pathGenerator.setTarget(projectName);
-//		pathGenerator.setCurrentProject(newVersionProjectName);
-//		pathGenerator.convertCurrentFilePath();
-//		String oldFilePath = pathGenerator.getCurrentFile();
+		//		pathGenerator.setTarget(projectName);
+		//		pathGenerator.setCurrentProject(newVersionProjectName);
+		//		pathGenerator.convertCurrentFilePath();
+		//		String oldFilePath = pathGenerator.getCurrentFile();
 		String oldFilePath = filePath.replace(newVersionProjectName, projectName);
 		if (filePath.endsWith(".java") && oldFilePath.endsWith(".java"))
 			if(JavaIO.exist(filePath) && JavaIO.exist(oldFilePath)){
 				if (!Rule.isInterface(oldFilePath) && Rule.isClassCode(oldFilePath)){
+					System.out.println("File: " + filePath + " X " + oldFilePath + " :Old");
 					checkingDifferences(filePath, oldFilePath);
+					System.out.println("Old: " + oldFilePath + " X " + filePath + " :File");
 					checkingDifferences(oldFilePath,filePath);
 				}
-	    	}
+			}
 	}
 
 	/**
@@ -84,11 +86,11 @@ public class DifferenceVisitor implements IResourceProxyVisitor  {
 	 */
 	private void checkingDifferences(String filePath, String oldFilePath) {
 		Difference difference = new Difference(filePath, oldFilePath);
-		 difference.diff();
-		 List<String> affected = difference.getStatementsDiff();
-		 if (!affected.isEmpty()) {
-		     differences.addAll(affected);
-		 }
+		difference.diff();
+		List<String> affected = difference.getStatementsDiff();
+		if (!affected.isEmpty()) {
+			differences.addAll(affected);
+		}
 	}
 
 	/**

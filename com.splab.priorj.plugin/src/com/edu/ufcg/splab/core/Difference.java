@@ -361,6 +361,11 @@ public class Difference {
         
         if (stNormal == stMod) return false;
         
+        // Bug fixing - Berg
+        if (stNormal == null && stMod != null) return true;
+        
+        if (stNormal != null && stMod == null) return true;
+        
         if (stNormal.size() != stMod.size()) return true;
         
         for (int i = 0; i < stNormal.size(); i++) {

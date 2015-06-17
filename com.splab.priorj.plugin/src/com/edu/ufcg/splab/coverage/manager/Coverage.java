@@ -101,6 +101,7 @@ public class Coverage {
 		int numberMethods = test.getNumberMethodsCoveredDistinct(); 
 		test.setNumberMethodsCoveredDistinct(numberMethods);
 	}
+	
 	/**
 	 * Add number of statements covered by test.
 	 * @param test

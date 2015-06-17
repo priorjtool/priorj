@@ -1,9 +1,13 @@
 package com.edu.ufcg.splab.priorj.controller;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.java.io.JavaIO;
+
+import coverage.TestCase;
+import coverage.TestSuite;
 
 /**
  * Data Manager class.
@@ -16,7 +20,7 @@ public class DataManager {
 	private static String localbase;
 	private static String projectFolder;
 	private static String versionFolder;
-	private static final String slash = JavaIO.SEPARATOR;
+	private static final String SLASH = JavaIO.SEPARATOR;
 		
 	/**
 	 * Creating the local base folder.
@@ -62,8 +66,66 @@ public class DataManager {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static List<List> openCoverageData(){
-		String path = DataManager.getCurrentPath()+slash+"coveragePriorJ.xml";
+		// TODO MUDAR AQUI.
+		String path = DataManager.getCurrentPath()+SLASH+"coveragePriorJ.xml";
 		return openCoverageData(path);
+	}
+	
+	public static List<String> getAllFileNamesStartingWith(final String path, final String matcher) {
+		List<String> results = new ArrayList<String>();
+
+
+		File[] files = new File(path).listFiles();
+		//If this pathname does not denote a directory, then listFiles() returns null. 
+
+		for (File file : files) {
+		    if (file.isFile() && file.getName().startsWith(matcher)) {
+		        results.add(file.getName());
+		    }
+		}
+		
+		return results;
+	}
+	
+	public static List<String> getSuiteList(final String path) {
+		List<String> results = new ArrayList<String>();
+
+
+		File[] files = new File(path).listFiles();
+		//If this pathname does not denote a directory, then listFiles() returns null. 
+
+		for (File file : files) {
+		    if (file.isDirectory() && !file.getName().equals("js") && !file.getName().equals("fonts") && !file.getName().equals("css")) {
+		        results.add(file.getName());
+		    }
+		}
+		
+		return results;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static List<TestSuite> openAllCoverageData(){
+		List<String> suiteNames = getSuiteList(DataManager.getCurrentPath() + SLASH);
+		List<TestSuite> suites = new ArrayList<TestSuite>();
+		for (String name : suiteNames) {
+			List<String> coverageFileNames = getAllFileNamesStartingWith(DataManager.getCurrentPath() + SLASH + name + SLASH, "coveragePriorJ");
+			String[] split = name.split("-");
+			TestSuite t = new TestSuite(split[0], split[1]);
+			List<TestCase> all = new ArrayList<TestCase>();
+			for (String fileName : coverageFileNames) {
+				String path = DataManager.getCurrentPath() + SLASH + name + SLASH + fileName;
+				@SuppressWarnings("unchecked")
+				List<TestCase> coverage = (List<TestCase>) JavaIO.getObjectFromXML(path);
+				System.out.println(coverage);
+				all.addAll(coverage);
+			}
+			t.setTestCases(all);
+			suites.add(t);
+		}
+		return suites;
+//		String path = DataManager.getCurrentPath()+SLASH+"coveragePriorJ.xml";
+//		
+//		return openCoverageData(path);
 	}
 	
 	/**
@@ -93,7 +155,7 @@ public class DataManager {
 		if(DataManager.localbase.isEmpty())
 			throw new Exception("Set local base path!");
 		DataManager.projectFolder = folderName;
-		JavaIO.createFolder(DataManager.localbase+slash+folderName);
+		JavaIO.createFolder(DataManager.localbase+SLASH+folderName);
 	}
 	/**
 	 * Get the project name.
@@ -147,7 +209,7 @@ public class DataManager {
 	 * @param content
 	 */
 	public static void save(String filename, String folder, String content){
-		JavaIO.createTextFile(DataManager.getCurrentPath()+slash+folder, filename, content, false);
+		JavaIO.createTextFile(DataManager.getCurrentPath()+SLASH+folder, filename, content, false);
 	}
 
 	public static String openFile(String filePath) {
@@ -162,7 +224,7 @@ public class DataManager {
 	 *   localBase/project/version/
 	 */
 	public static String getCurrentPath(){
-		return DataManager.localbase + slash + DataManager.projectFolder + slash + DataManager.versionFolder;
+		return DataManager.localbase + SLASH + DataManager.projectFolder + SLASH + DataManager.versionFolder;
 	}
 	
 	public static String traceRoutesFromBase(){

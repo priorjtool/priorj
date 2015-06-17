@@ -30,6 +30,8 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import com.thoughtworks.xstream.XStream;
@@ -243,7 +245,7 @@ public class JavaIO {
 	 *   state whether or not to overwrite the contents.
 	 */
 	public static void createXMLFile(String path, String fileName, String content, boolean overwrite) {
-		if(!exist(path)){
+		if(!exist(path)) {
 			createFolder(path);
 		}
 		saveFile(path+SEPARATOR+fileName, content, overwrite);
@@ -307,7 +309,7 @@ public class JavaIO {
 	 * @throws IOException  */  
 	public static void copy(File origem, File destino,boolean overwrite) throws IOException{  
 		if (destino.exists() && !overwrite){  
-			return;  
+			return;
 		}  
 		if (destino.isFile() && !destino.exists()){
 			destino.createNewFile();

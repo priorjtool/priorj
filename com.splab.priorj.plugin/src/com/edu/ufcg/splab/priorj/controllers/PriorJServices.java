@@ -22,6 +22,7 @@ import com.edu.ufcg.splab.priorj.core.AJDTHandler;
 import com.edu.ufcg.splab.priorj.core.DifferenceVisitor;
 import com.edu.ufcg.splab.priorj.core.JUnitLaunch;
 import com.edu.ufcg.splab.priorj.core.JUnitReportFailures;
+import com.edu.ufcg.splab.priorj.coverage.controller.TestSuiteController;
 import com.edu.ufcg.splab.priorj.report.GenerateTreeData;
 import com.edu.ufcg.splab.priorj.technique.EmptySetOfTestCaseException;
 import com.edu.ufcg.splab.priorj.technique.Technique;
@@ -125,7 +126,7 @@ public class PriorJServices {
 	 * 
 	 * @return
 	 */
-	public String getSelectedProjectName(){
+	public String getSelectedProjectName() {
 		return DataManager.getProjectFolderName();
 	}
 	/**
@@ -168,7 +169,7 @@ public class PriorJServices {
 	 */
 	public void prioritizeAll(int size) throws Exception {
 		Coverage coverage = new Coverage();
-		List<TestSuite> suites = getSuites();	
+		List<TestSuite> suites = getSuites();
 		List<TestCase> allTests = coverage.getAllTests(suites);
 		String projectName = DataManager.getProjectFolderName();
 		String projPath = ajdtHandler.getFullProjectPath(projectName);
@@ -241,9 +242,10 @@ public class PriorJServices {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public List<TestSuite> getSuites() {
-		List<List> allSuites = DataManager.openCoverageData();
-		Coverage coverage = new Coverage();
-		List<TestSuite> suites = coverage.getSuiteList(allSuites);
+		List<TestSuite> suites = DataManager.openAllCoverageData();
+//		List<List> allSuites = DataManager.openCoverageData();
+//		Coverage coverage = new Coverage();
+//		List<TestSuite> suites = coverage.getSuiteList(allSuites);
 		return suites;
 	}
 
@@ -386,7 +388,7 @@ public class PriorJServices {
 	public void writeXMLFinisher() {
 		JavaIO.createXMLFile(getCurrentPath(), "coveragePriorJ.xml", "</list>", true);
 	}
-
+	
 	/**
 	 * Reading the coverage file to local data.
 	 * 
@@ -495,7 +497,6 @@ public class PriorJServices {
 		String path = DataManager.getLocalBasePath() + JavaIO.SEPARATOR + "prioritizations.xml";
 		return JavaIO.getObjectFromXML(path);
 	}
-	
 	
 	public boolean existPrioritizationsXml(){
 		String path = DataManager.getLocalBasePath() + JavaIO.SEPARATOR + "prioritizations.xml";
