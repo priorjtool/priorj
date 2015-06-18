@@ -104,7 +104,7 @@ public class DataManager {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public static List<TestSuite> openAllCoverageData(){
+	public static List<TestSuite> openAllCoverageData() {
 		List<String> suiteNames = getSuiteList(DataManager.getCurrentPath() + SLASH);
 		List<TestSuite> suites = new ArrayList<TestSuite>();
 		for (String name : suiteNames) {

@@ -4,21 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
-import org.junit.runner.notification.Failure;
-
 import com.edu.ufcg.splab.core.Difference;
 import com.edu.ufcg.splab.core.InstrumentClass;
-import com.edu.ufcg.splab.coverage.*;
 import com.edu.ufcg.splab.coverage.manager.Coverage;
 import com.edu.ufcg.splab.priorj.report.GenerateCoverageReport;
 import com.edu.ufcg.splab.priorj.report.GenerateExecutionOrderReport;
 import com.edu.ufcg.splab.priorj.report.GenerateTestSuite;
 import com.edu.ufcg.splab.priorj.report.GenerateTestSuiteForJUnit4;
 import com.edu.ufcg.splab.priorj.technique.*;
-import com.edu.ufcg.splab.tests.priorj.coverage.dao.AllTests;
-import com.java.io.JavaIO;
 
 import coverage.TestCase;
 import coverage.TestSuite;

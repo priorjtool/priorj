@@ -144,125 +144,6 @@ public class AJDTHandler  {
 		return javaProject;
 	}
 	
-	
-//	private IProject createTempProject(IProject projDelta) throws CoreException  {
-//		IFolder libFolder = projDelta.getFolder("lib");
-//		IResource[] members = null;
-//		try  {
-//			members = libFolder.members();
-//		} catch (ResourceException e)  {
-//			try  {
-//				libFolder = projDelta.getFolder("libs");
-//				members = libFolder.members();
-//			} catch (Exception e2)  {
-//				// TODO: handle exception
-//			}
-//		}
-//
-//		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-//		IProject project = root.getProject(projDelta.getName()+"%Temp%");
-//		project.create(null);
-//		project.open(null);
-//		
-//
-//		//set the Java nature
-//		IProjectDescription description = project.getDescription();
-//		description.setNatureIds(new String[]  { JavaCore.NATURE_ID});
-//	
-//
-//		//create the project
-//		project.setDescription(description, null);
-//		IJavaProject javaProject = JavaCore.create(project);
-//
-//		IJavaProject javaProjectDelta = JavaCore.create(projDelta);
-//		
-//		//create folder by using resources package
-//		IFolder folder = project.getFolder("src");
-//		folder.create(true, true, null);
-//
-//		//create lib folder by using resources package
-//		IFolder folderLib = project.getFolder("lib");
-//		folderLib.create(true, true, null);
-//		
-//		ArrayList<IClasspathEntry> libEntries = new ArrayList<IClasspathEntry>();
-//		if (members != null) {
-//			for (IResource iResource : members)  {
-//				if (iResource.getName().endsWith(".jar") || iResource.getName().endsWith(".zip")) {
-//					iResource.copy(new Path (folderLib.getFullPath().toString()+SEPARATOR+iResource.getName()), true, null);
-//
-//					IClasspathEntry libEntry = JavaCore.newLibraryEntry(
-//							new Path(projDelta.getFullPath().toString()+"%Temp%"+SEPARATOR+"lib"+SEPARATOR+ iResource.getName()), 
-//							null, //no source
-//							null, //no source
-//							false); //not exported
-//
-//					libEntries.add(libEntry);
-//				}
-//			}
-//		}
-//
-//		//set the build path
-//		IClasspathEntry[] buildPath = new IClasspathEntry[libEntries.size()+2];
-//		for (int i = 0; i < buildPath.length; i++)  {
-//			if (i == 0)
-//				buildPath[0] = JavaCore.newSourceEntry(project.getFullPath().append("src"));
-//			else if (i == 1)
-//				buildPath[1] = JavaRuntime.getDefaultJREContainerEntry();
-//			else buildPath[i] = libEntries.get(i-2);
-//		}	
-//
-//		javaProject.setRawClasspath(buildPath, project.getFullPath().append(
-//				"bin"), null);
-//
-//		//Add folder to Java element
-//		IPackageFragmentRoot srcFolder = javaProject
-//				.getPackageFragmentRoot(folder);
-//
-//		final ASTParser parser = ASTParser.newParser(AST.JLS3); 
-//		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-//		for (IPackageFragment fragTarg : javaProjectDelta.getPackageFragments())  {
-//			if (fragTarg.getCompilationUnits().length > 0 ) {
-//				IPackageFragment fragment = srcFolder.createPackageFragment(
-//						fragTarg.getElementName(), true, null);
-//				for (ICompilationUnit cuTarg : fragTarg.getCompilationUnits())  {
-//					if (cuTarg.getElementName().toString().equals("Init.java"))
-//						System.out.println();
-//					IResource resource = cuTarg.getUnderlyingResource();
-//					if (resource.getType() == IResource.FILE)  {
-//						IFile ifile = (IFile) resource;
-//						String path = ifile.getRawLocation().toString();
-//						BufferedReader br;
-//						try  {
-//							br = new BufferedReader(new FileReader(path));
-//							String line ;
-//							String str = "";
-//							while ((line = br.readLine()) != null)  {
-//								if (line.equals(""))
-//									str+= "\n";
-//								else str+=line+"\n";
-//							}
-//
-//							parser.setSource(str.toCharArray());
-//
-//							//							System.out.println(str);
-//
-//							ICompilationUnit cu = fragment.createCompilationUnit(cuTarg.getElementName(), str,
-//									false, null);
-//						} catch (FileNotFoundException e)  {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						} catch (IOException e)  {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//					}
-//				}
-//			}
-//		}
-//		return project;
-//	}
-	
-	
 	/**
 	 * This method do a clone from existing java project.
 	 *  
@@ -284,21 +165,11 @@ public class AJDTHandler  {
 		copyLibrariesDependencies(copyProjectName);
 		convertToAspectJProject(getProject(copyProjectName));
 		
-		//IClasspathEntry [] original = JavaCore.create(getProject(originalProjectName)).getRawClasspath();
-		//copyProject.setRawClasspath(original, null);
-		
 		addAjrtToBuildPath(copyProject);
 		addCoverageLibraryToBuildPath(copyProject);
 		addJavaIOLibraryToBuildPath(copyProject);
-//		addObjectDBLibraryToBuildPath(copyProject);
+		addObjectDBLibraryToBuildPath(copyProject);
 		
-		//addAjrtToBuildPath(copyProject);
-		//addJUnit4ToBuildPath(copyProject);
-		//addCoverageLibraryToBuildPath(copyProject);
-		//IClasspathEntry [] original = JavaCore.create(getProject(originalProjectName)).getRawClasspath();
-		//IClasspathEntry [] newEntries = mergeClasspath(copyProject.getRawClasspath(), original);
-		//copyProject.setRawClasspath(newEntries, null);
-				
 		refresh(copyProjectName);
 		return copyProject;		
 	}
@@ -618,11 +489,11 @@ public class AJDTHandler  {
 		fileStream.close();
 		
 		// Copy the ObjectDB lib from PriorJ plugin.
-//		url = bundle.getEntry("lib/" + OBJECT_DB_LIBRARY);
-//		newLib = libFolder.getFile(OBJECT_DB_LIBRARY);
-//		fileStream = url.openConnection().getInputStream();
-//		newLib.create(fileStream, false, null);
-//		fileStream.close();
+		url = bundle.getEntry("lib/" + OBJECT_DB_LIBRARY);
+		newLib = libFolder.getFile(OBJECT_DB_LIBRARY);
+		fileStream = url.openConnection().getInputStream();
+		newLib.create(fileStream, false, null);
+		fileStream.close();
 	}
 	/**
 	 * Copying Resource to Reports.

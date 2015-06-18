@@ -54,6 +54,8 @@ public class PriorJServices {
 	 */
 	PriorJ priorj;
 	
+	private TestSuiteController controller;
+	
 	private String slash = JavaIO.SEPARATOR;
 	
 	/**
@@ -64,6 +66,7 @@ public class PriorJServices {
 		ajdtHandler = new AJDTHandler();	
 		projects = ajdtHandler.getProjects();
 		priorj = PriorJ.getInstance();
+		controller = TestSuiteController.getInstance();
 	}
 	
 	public static PriorJServices getInstance(){
@@ -169,6 +172,10 @@ public class PriorJServices {
 	 */
 	public void prioritizeAll(int size) throws Exception {
 		Coverage coverage = new Coverage();
+		List<com.edu.ufcg.splab.priorj.coverage.model.TestSuite> ss = getSuites1();
+		for (com.edu.ufcg.splab.priorj.coverage.model.TestSuite s : ss) {
+			System.out.println(s.teste());
+		}
 		List<TestSuite> suites = getSuites();
 		List<TestCase> allTests = coverage.getAllTests(suites);
 		String projectName = DataManager.getProjectFolderName();
@@ -246,6 +253,13 @@ public class PriorJServices {
 //		List<List> allSuites = DataManager.openCoverageData();
 //		Coverage coverage = new Coverage();
 //		List<TestSuite> suites = coverage.getSuiteList(allSuites);
+		return suites;
+	}
+	
+	public List<com.edu.ufcg.splab.priorj.coverage.model.TestSuite> getSuites1() {
+		this.controller.initDatabase();
+		List<com.edu.ufcg.splab.priorj.coverage.model.TestSuite> suites = this.controller.getAll();
+		this.controller.closeDatabase();
 		return suites;
 	}
 

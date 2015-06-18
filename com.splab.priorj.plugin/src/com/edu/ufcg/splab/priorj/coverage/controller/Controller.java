@@ -23,7 +23,7 @@ public class Controller {
     }
     
     public void initDatabase() {
-    	emf = Persistence.createEntityManagerFactory("coverage.odb");
+    	emf = Persistence.createEntityManagerFactory("C:/PriorJ/workspace/priorj/com.splab.priorj.plugin/database/coverage.odb");
         em = emf.createEntityManager();
     }
     

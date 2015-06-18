@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.edu.ufcg.splab.coverage.dao.NewRepository;
+import com.edu.ufcg.splab.coverage.dao.Repository;
 import com.edu.ufcg.splab.priorj.coverage.controller.TestSuiteController;
 import com.edu.ufcg.splab.priorj.coverage.model.TestSuite;
 
@@ -15,7 +15,7 @@ public class TestRepository {
 
 	@Test
 	public void testCreateRepositoryObject() {
-		NewRepository r = new NewRepository();
+		Repository r = new Repository();
 		Assert.assertNotNull(r);
 	}
 	
