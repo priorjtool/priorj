@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.java.io.JavaIO;
 
-import coverage.TestCase;
-import coverage.TestSuite;
+import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
+import com.edu.ufcg.splab.priorj.coverage.model.TestSuite;
 
 /**
  * Data Manager class.

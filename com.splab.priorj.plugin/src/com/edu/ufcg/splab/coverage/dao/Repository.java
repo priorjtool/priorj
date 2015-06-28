@@ -269,9 +269,14 @@ public class Repository {
     	getAtualSuite().addTestCase(getAtualTestCase());
         suites.add(getAtualSuite());
         this.controller.add(suites);
+        this.controller.closeDatabase();
+        this.controller.initDatabase();
         List<TestSuite> suite = this.controller.getAll();
         for (TestSuite test : suite) {
 			System.out.println(test.teste());
+			for (TestCase t : test.getTestCases()) {
+				System.out.println(t.teste());
+			}
 		}
     }
     

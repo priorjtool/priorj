@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 import main.FacadeRBA;
 
-import coverage.TestCase;
+import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
 import com.java.io.JavaIO;
 
 import exceptions.DBException;

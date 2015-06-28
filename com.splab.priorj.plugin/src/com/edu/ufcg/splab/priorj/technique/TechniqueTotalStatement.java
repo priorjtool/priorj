@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import coverage.TestCase;
-
+import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
 
 /**
  * This class implements the Total Statement Technique.

@@ -24,7 +24,7 @@ public class TestSuiteControllerTest {
 	@Before
 	public void setUp() {
 		 this.controller = new TestSuiteController();
-		 this.controller.clearDb();
+//		 this.controller.clearDb();
 	}
 	
 	private TestSuite createTestSuite() {
@@ -51,14 +51,39 @@ public class TestSuiteControllerTest {
 	}
 	
 	@Test
-	public void testAdd() {
+	public void test() {
+		this.controller.initDatabase();
 		TestSuite ts = createTestSuite();
 		this.controller.add(ts);
-		System.out.println(ts);
-		TestSuite m = this.controller.get(ts);
-		System.out.println(m);
-		assertEquals(ts, m);
+		System.out.println("Salvando");
+		System.out.println(ts.teste());
+		for (TestCase t : ts.getTestCases()) {
+			System.out.println(t.teste());
+		}
+		this.controller.closeDatabase();
+		
+		this.controller.initDatabase();
+		List<TestSuite> suite = this.controller.getAll();
+		this.controller.closeDatabase();
+		System.out.println("From Database");
+		for (TestSuite testSuite : suite) {
+			System.out.println(testSuite.teste());
+			for (TestCase t : testSuite.getTestCases()) {
+				System.out.println(t.teste());
+			}
+		}
+		
 	}
+	
+//	@Test
+//	public void testAdd() {
+//		TestSuite ts = createTestSuite();
+//		this.controller.add(ts);
+//		System.out.println(ts);
+//		TestSuite m = this.controller.get(ts);
+//		System.out.println(m);
+//		assertEquals(ts, m);
+//	}
 //	
 //	@Test
 //	public void testRemove() {

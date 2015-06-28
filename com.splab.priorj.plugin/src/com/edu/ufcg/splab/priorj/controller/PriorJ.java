@@ -13,10 +13,8 @@ import com.edu.ufcg.splab.priorj.report.GenerateTestSuite;
 import com.edu.ufcg.splab.priorj.report.GenerateTestSuiteForJUnit4;
 import com.edu.ufcg.splab.priorj.technique.*;
 
-import coverage.TestCase;
-import coverage.TestSuite;
-
-
+import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
+import com.edu.ufcg.splab.priorj.coverage.model.TestSuite;
 
 /**
  * Class PriorJ priorization of JUnit Test Cases. 

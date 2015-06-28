@@ -13,8 +13,11 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.PartInitException;
 
-import coverage.*;
-
+import com.edu.ufcg.splab.priorj.coverage.model.ClassCode;
+import com.edu.ufcg.splab.priorj.coverage.model.Method;
+import com.edu.ufcg.splab.priorj.coverage.model.Statement;
+import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
+import com.edu.ufcg.splab.priorj.coverage.model.TestSuite;
 import com.edu.ufcg.splab.coverage.manager.Coverage;
 import com.edu.ufcg.splab.priorj.controller.DataManager;
 import com.edu.ufcg.splab.priorj.controller.PriorJ;
@@ -172,8 +175,8 @@ public class PriorJServices {
 	 */
 	public void prioritizeAll(int size) throws Exception {
 		Coverage coverage = new Coverage();
-		List<com.edu.ufcg.splab.priorj.coverage.model.TestSuite> ss = getSuites1();
-		for (com.edu.ufcg.splab.priorj.coverage.model.TestSuite s : ss) {
+		List<TestSuite> ss = getSuites1();
+		for (TestSuite s : ss) {
 			System.out.println(s.teste());
 		}
 		List<TestSuite> suites = getSuites();

@@ -21,9 +21,7 @@ package com.edu.ufcg.splab.priorj.technique;
 import java.util.ArrayList;
 import java.util.List;
 
-import coverage.TestCase;
-
-
+import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
 
 /**
  * This interface represent a technique used for  prioritization.

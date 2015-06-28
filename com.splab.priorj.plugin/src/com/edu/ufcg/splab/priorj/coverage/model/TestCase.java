@@ -19,12 +19,14 @@ package com.edu.ufcg.splab.priorj.coverage.model;
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 /**
  * The class <code>TesteCase</code> represents a test case contains a name and a list of
@@ -34,7 +36,7 @@ import javax.persistence.Id;
  * 
  */
 @Entity
-public class TestCase {
+public class TestCase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	 
@@ -45,7 +47,13 @@ public class TestCase {
     private int numberStatementsCovered;
 	private int numberMethodsCovered;
     private String signature = "";
-
+    public List<TestSuite> suites;
+    
+    @ManyToMany(mappedBy = "TestSuite")
+    public List<TestSuite> getSuites() {
+    	return suites;
+    }
+    
     /**
 	 * Empty Constructor for database requests.
 	 */
@@ -312,6 +320,13 @@ public class TestCase {
 		} else if (!signature.equals(other.signature))
 			return false;
 		return true;
+	}
+
+	public String teste() {
+		return "TestCase [id=" + id + ", name=" + name + ", classCoverage="
+				+ classCoverage + ", numberStatementsCovered="
+				+ numberStatementsCovered + ", numberMethodsCovered="
+				+ numberMethodsCovered + ", signature=" + signature + "]";
 	}
 
 	/**

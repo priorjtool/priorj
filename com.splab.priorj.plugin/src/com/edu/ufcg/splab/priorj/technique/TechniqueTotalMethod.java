@@ -23,8 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import coverage.TestCase;
-
+import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
 
 /**
  * Total Method Coverage (TMC): Similar to the TSC, differing by using the 

@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import coverage.TestCase;
+import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
 
 /**
  * 

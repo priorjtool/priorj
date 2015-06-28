@@ -18,10 +18,12 @@ package com.edu.ufcg.splab.priorj.coverage.model;
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.jdo.annotations.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -36,15 +38,14 @@ import javax.persistence.OneToMany;
  * 
  */
 @Entity
-public class Method {
+public class Method implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	 
-    @Id @GeneratedValue
+	@Id @GeneratedValue
+    @Column(name = "ID")
     private long id;
     private String name;
-    @ManyToMany
-    @JoinTable(name="METHOD_STATEMENT")
     private List<Statement> statementCoverage;
 
     /**
@@ -110,6 +111,8 @@ public class Method {
      * Get a list of all the Statements covered by this method, i.e., all lines of code affected by this method.
      * @return a array list of objects of type <code>Statement</code>.
      */
+    @ManyToMany
+    @JoinTable(name="METHOD_STATEMENT")
     public List<Statement> getStatementCoverage() {
         return statementCoverage;
     }

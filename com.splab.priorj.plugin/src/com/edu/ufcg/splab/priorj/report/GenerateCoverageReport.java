@@ -21,7 +21,11 @@ package com.edu.ufcg.splab.priorj.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import coverage.*;
+import com.edu.ufcg.splab.priorj.coverage.model.ClassCode;
+import com.edu.ufcg.splab.priorj.coverage.model.Method;
+import com.edu.ufcg.splab.priorj.coverage.model.Statement;
+import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
+import com.edu.ufcg.splab.priorj.coverage.model.TestSuite;
 
 /**
  * This class generate a simple coverage report.

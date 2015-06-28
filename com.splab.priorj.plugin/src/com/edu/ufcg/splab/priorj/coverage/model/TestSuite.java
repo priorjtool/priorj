@@ -19,12 +19,15 @@ package com.edu.ufcg.splab.priorj.coverage.model;
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 /**
  * <code> TestSuite</code> represents a test suite, i.e., a set of
@@ -36,7 +39,7 @@ import javax.persistence.Id;
  *
  */
 @Entity
-public class TestSuite {
+public class TestSuite implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	 
@@ -129,6 +132,8 @@ public class TestSuite {
      * 
      * @return the list of <code>TesteCase</code>.
      */
+    @ManyToMany
+    @JoinTable(name = "SUITE_TESTCASES")
     public List<TestCase> getTestCases() {
         return testCases;
     }

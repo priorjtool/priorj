@@ -1,8 +1,10 @@
 package com.edu.ufcg.splab.priorj.coverage.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+import javax.jdo.annotations.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -33,14 +35,14 @@ import javax.persistence.ManyToMany;
  * @author Berg Élisson
  */
 @Entity
-public class Statement {
+public class Statement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	 
-    @Id @GeneratedValue
+	@Id @GeneratedValue
+    @Column(name = "ID")
     private long id;
     private String lineNumber;
-    @ManyToMany(mappedBy="statementCoverage")
 	private List<Method> methods;
 
     /**
@@ -94,6 +96,7 @@ public class Statement {
      * 
      * @return Collection<Method>.
      */
+    @ManyToMany(mappedBy="statementCoverage")
     public List<Method> getMethods() {
 		return methods;
 	}

@@ -215,6 +215,7 @@ public class AJDTHandler  {
 				JavaRuntime.getDefaultJREContainerEntry() ,
 				JavaCore.newLibraryEntry(new Path("/"+projectName+"/lib/" + COVERAGE_LIBRARY),null, null),
 				JavaCore.newLibraryEntry(new Path("/"+projectName+"/lib/" + JAVA_IO_LIBRARY),null, null),
+				JavaCore.newLibraryEntry(new Path("/"+projectName+"/lib/" + OBJECT_DB_LIBRARY),null, null),
 				junit4Entry
 		};
 		return buildPath;

@@ -21,8 +21,7 @@ package com.edu.ufcg.splab.priorj.technique;
 import java.util.ArrayList;
 import java.util.List;
 
-import coverage.TestCase;
-
+import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
 
 public class TechniqueAdditionalStatement implements Technique {
 

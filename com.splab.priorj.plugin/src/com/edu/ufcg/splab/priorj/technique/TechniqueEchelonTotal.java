@@ -26,8 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import coverage.TestCase;
-
+import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
 
 public class TechniqueEchelonTotal extends ModificationTechnique implements Technique {
 	

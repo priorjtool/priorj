@@ -25,9 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import coverage.TestCase;
-
-
+import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
 
 /**
  * This is an auxiliary class to Prioritization Techniques.
