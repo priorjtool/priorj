@@ -29,6 +29,7 @@ Bundle-ClassPath: .,
  lib/org.eclipse.ajdt.ui_2.2.3.e43x-RELEASE-20130627-0800.jar,
  lib/javaparser-1.0.8.jar,
  lib/RBA1.0.jar,
+ lib/gson-2.3.1.jar,
  lib/xmlpull-1.1.3.1.jar,
  lib/xpp3_min-1.1.4c.jar,
  lib/xstream-1.4.2.jar

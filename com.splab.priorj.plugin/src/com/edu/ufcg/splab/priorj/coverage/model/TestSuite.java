@@ -19,15 +19,9 @@ package com.edu.ufcg.splab.priorj.coverage.model;
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
 /**
  * <code> TestSuite</code> represents a test suite, i.e., a set of
@@ -38,13 +32,8 @@ import javax.persistence.ManyToMany;
  * @version 1.0
  *
  */
-@Entity
-public class TestSuite implements Serializable {
+public class TestSuite {
 
-	private static final long serialVersionUID = 1L;
-	 
-    @Id @GeneratedValue
-    private long id;
     private String packageName;
     private String name;
     private List<TestCase> testCases;
@@ -70,15 +59,6 @@ public class TestSuite implements Serializable {
         this.testCases = new ArrayList<TestCase>();
     }
 
-    /**
-     * Get the id in ObjectDB.
-     * 
-     * @return Long with the database id.
-     */
-    public Long getId() {
-        return id;
-    }
-    
     /**
      * Add a test case in the suite.
      * 
@@ -132,8 +112,6 @@ public class TestSuite implements Serializable {
      * 
      * @return the list of <code>TesteCase</code>.
      */
-    @ManyToMany
-    @JoinTable(name = "SUITE_TESTCASES")
     public List<TestCase> getTestCases() {
         return testCases;
     }
@@ -176,16 +154,37 @@ public class TestSuite implements Serializable {
         return packageName + "." + name;
     }
     
-    public String teste() {
-    	return "TestSuite [id=" + id + ", packageName=" + packageName
-				+ ", name=" + name + ", testCases=" + testCases + "]";
+    public void teste() {
+//    	System.out.println("Package = " + getPackageName());
+//		System.out.println("Name = " + getName());
+//		System.out.println("Suites Count = " + getNumberOfSuites());
+//		for (TestCase tc : getTestCases()) {
+//			System.out.println("------------------ TestCases ------------------");
+//			System.out.println(tc.getName());
+//			for (ClassCode cc : tc.getClassCoverage()) {
+//				System.out.println("------------------ Class Code ------------------");
+//				System.out.println(cc.getName());
+//				System.out.println(cc.getPackageName());
+//				System.out.println(cc.getNumberMethodCoverage());
+//				for (Method m : cc.getMethodCoverage()) {
+//					System.out.println("------------------ Method ------------------");
+//					System.out.println(m.getName());
+//					System.out.println(m.getNumberStatements());
+//					for (Statement s : m.getStatementCoverage()) {
+//						System.out.println("------------------ Statement ------------------");
+//						System.out.println(s.getLineNumber());
+//					}
+//				}
+//			}
+//
+//
+//		}
     }
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result
 				+ ((packageName == null) ? 0 : packageName.hashCode());
@@ -210,8 +209,6 @@ public class TestSuite implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		TestSuite other = (TestSuite) obj;
-		if (id != other.id)
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;

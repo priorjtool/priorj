@@ -19,6 +19,8 @@ package com.edu.ufcg.splab.coverage.dao;
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -265,28 +267,23 @@ public class Repository {
      * Method that performs recording data in the XML file.
      */
     public void commit() {
-    	this.controller.initDatabase();
     	getAtualSuite().addTestCase(getAtualTestCase());
         suites.add(getAtualSuite());
-        this.controller.add(suites);
-        this.controller.closeDatabase();
-        this.controller.initDatabase();
-        List<TestSuite> suite = this.controller.getAll();
-        for (TestSuite test : suite) {
-			System.out.println(test.teste());
-			for (TestCase t : test.getTestCases()) {
-				System.out.println(t.teste());
-			}
+        try {
+			this.controller.save(suites);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
     }
     
     public void finishCommit() {
-    	this.controller.closeDatabase();
+    	try {
+			JavaIO.copyAll(new File("database"), new File("C:/PriorJ/workspace/priorj/com.splab.priorj.plugin/database"), true);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
-    
-//    public void copy() {
-//    	JavaIO.copy(DataManager.getCurrentPath() + JavaIO.SEPARATOR + DataManager.projectFolder 
-//    			+ JavaIO.SEPARATOR + DataManager.versionFolder, destino, overwrite);
-//    }
     
 }

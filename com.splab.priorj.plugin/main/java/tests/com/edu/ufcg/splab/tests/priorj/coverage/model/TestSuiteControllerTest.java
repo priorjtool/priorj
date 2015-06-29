@@ -2,6 +2,8 @@ package com.edu.ufcg.splab.tests.priorj.coverage.model;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -9,8 +11,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.edu.ufcg.splab.priorj.coverage.controller.MethodController;
-import com.edu.ufcg.splab.priorj.coverage.controller.StatementController;
 import com.edu.ufcg.splab.priorj.coverage.controller.TestSuiteController;
 import com.edu.ufcg.splab.priorj.coverage.model.ClassCode;
 import com.edu.ufcg.splab.priorj.coverage.model.Method;
@@ -37,6 +37,7 @@ public class TestSuiteControllerTest {
 		Method m = new Method("setUp()");
 		m.addStatement(st1);
 		m.addStatement(st2);
+		cc.addMethod(m);
 		// TestCase.
 		TestCase tc = new TestCase("testAdd()");
 		tc.addClassCoverage(cc);
@@ -52,22 +53,25 @@ public class TestSuiteControllerTest {
 	
 	@Test
 	public void test() {
-		this.controller.initDatabase();
+		List<TestSuite> suite = new ArrayList<TestSuite>();
 		TestSuite ts = createTestSuite();
-		this.controller.add(ts);
 		System.out.println("Salvando");
-		System.out.println(ts.teste());
+		ts.teste();
 		for (TestCase t : ts.getTestCases()) {
 			System.out.println(t.teste());
 		}
-		this.controller.closeDatabase();
+		suite.add(ts);
+		try {
+			this.controller.save(suite);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		this.controller.initDatabase();
-		List<TestSuite> suite = this.controller.getAll();
-		this.controller.closeDatabase();
 		System.out.println("From Database");
+		suite = this.controller.getAll();
 		for (TestSuite testSuite : suite) {
-			System.out.println(testSuite.teste());
+			testSuite.teste();
 			for (TestCase t : testSuite.getTestCases()) {
 				System.out.println(t.teste());
 			}

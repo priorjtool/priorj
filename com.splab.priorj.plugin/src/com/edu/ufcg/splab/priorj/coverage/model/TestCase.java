@@ -19,14 +19,8 @@ package com.edu.ufcg.splab.priorj.coverage.model;
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 
 /**
  * The class <code>TesteCase</code> represents a test case contains a name and a list of
@@ -35,24 +29,13 @@ import javax.persistence.ManyToMany;
  * @author Berg Élisson
  * 
  */
-@Entity
-public class TestCase implements Serializable {
+public class TestCase {
 
-	private static final long serialVersionUID = 1L;
-	 
-    @Id @GeneratedValue
-    private long id;
     private String name = "";
     private List<ClassCode> classCoverage;
     private int numberStatementsCovered;
 	private int numberMethodsCovered;
     private String signature = "";
-    public List<TestSuite> suites;
-    
-    @ManyToMany(mappedBy = "TestSuite")
-    public List<TestSuite> getSuites() {
-    	return suites;
-    }
     
     /**
 	 * Empty Constructor for database requests.
@@ -72,15 +55,6 @@ public class TestCase implements Serializable {
         numberStatementsCovered = 0;
     }
 
-    /**
-     * Get the id in ObjectDB.
-     * 
-     * @return Long with the database id.
-     */
-    public Long getId() {
-        return id;
-    }
-    
     /**
      * Add a object of type <code>ClassCode</code> for the test case.
      * @param clazz a object <code>ClassCode</code>.
@@ -280,7 +254,6 @@ public class TestCase implements Serializable {
 		int result = 1;
 		result = prime * result
 				+ ((classCoverage == null) ? 0 : classCoverage.hashCode());
-		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + numberMethodsCovered;
 		result = prime * result + numberStatementsCovered;
@@ -303,8 +276,6 @@ public class TestCase implements Serializable {
 				return false;
 		} else if (!classCoverage.equals(other.classCoverage))
 			return false;
-		if (id != other.id)
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -323,7 +294,7 @@ public class TestCase implements Serializable {
 	}
 
 	public String teste() {
-		return "TestCase [id=" + id + ", name=" + name + ", classCoverage="
+		return "TestCase [name=" + name + ", classCoverage="
 				+ classCoverage + ", numberStatementsCovered="
 				+ numberStatementsCovered + ", numberMethodsCovered="
 				+ numberMethodsCovered + ", signature=" + signature + "]";

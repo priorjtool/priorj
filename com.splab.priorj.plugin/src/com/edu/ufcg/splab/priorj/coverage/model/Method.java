@@ -18,18 +18,8 @@ package com.edu.ufcg.splab.priorj.coverage.model;
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import javax.jdo.annotations.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 
 /**
  * Class <code>Method</code> is a method that will be covered, each method is formed by a set of <code>Statement</code>.
@@ -37,14 +27,8 @@ import javax.persistence.OneToMany;
  * @author Berg Élisson
  * 
  */
-@Entity
-public class Method implements Serializable {
+public class Method {
 
-	private static final long serialVersionUID = 1L;
-	 
-	@Id @GeneratedValue
-    @Column(name = "ID")
-    private long id;
     private String name;
     private List<Statement> statementCoverage;
 
@@ -71,15 +55,6 @@ public class Method implements Serializable {
         this.statementCoverage = new ArrayList<Statement>();
     }
 
-    /**
-     * Get the id in ObjectDB.
-     * 
-     * @return Long with the database id.
-     */
-    public Long getId() {
-        return id;
-    }
-    
     /**
      * Add a new object of the type <code>Statement</code> covered by this method.
      * @param sttm - a object of the type <code>Statement</code>.
@@ -111,8 +86,6 @@ public class Method implements Serializable {
      * Get a list of all the Statements covered by this method, i.e., all lines of code affected by this method.
      * @return a array list of objects of type <code>Statement</code>.
      */
-    @ManyToMany
-    @JoinTable(name="METHOD_STATEMENT")
     public List<Statement> getStatementCoverage() {
         return statementCoverage;
     }
@@ -185,7 +158,6 @@ public class Method implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime
 				* result
@@ -195,7 +167,7 @@ public class Method implements Serializable {
 	}
 
 	public String teste() {
-		return "Method [id=" + id + ", name=" + name + ", statementCoverage="
+		return "Method [name=" + name + ", statementCoverage="
 				+ statementCoverage + "]";
 	}
 
@@ -213,8 +185,6 @@ public class Method implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Method other = (Method) obj;
-		if (id != other.id)
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;

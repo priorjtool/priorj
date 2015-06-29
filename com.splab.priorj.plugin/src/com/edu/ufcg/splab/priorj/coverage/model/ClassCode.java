@@ -32,12 +32,8 @@ import javax.persistence.Id;
  * @author Berg Élisson
  * 
  */
-@Entity
 public class ClassCode {
-	private static final long serialVersionUID = 1L;
 	
-	@Id @GeneratedValue
-    private long id;
 	private String packageName;
 	private String name;
 	private List<Method> methodCoverage;
@@ -60,15 +56,6 @@ public class ClassCode {
 		this.methodCoverage = new ArrayList<Method>();
 	}
 
-	/**
-     * Get the id in ObjectDB.
-     * 
-     * @return Long with the database id.
-     */
-    public Long getId() {
-        return id;
-    }
-	
 	/**
 	 *  Adds a new method for this classCode, i.e. means 
 	 *  that the class containing that method and they will be seen by the coverage.
@@ -209,7 +196,6 @@ public class ClassCode {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result
 				+ ((methodCoverage == null) ? 0 : methodCoverage.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -219,7 +205,7 @@ public class ClassCode {
 	}
 
 	public String teste() {
-		return "ClassCode [id=" + id + ", packageName=" + packageName
+		return "ClassCode [packageName=" + packageName
 				+ ", name=" + name + ", methodCoverage=" + methodCoverage + "]";
 	}
 
@@ -239,8 +225,6 @@ public class ClassCode {
 		if (getClass() != obj.getClass())
 			return false;
 		ClassCode other = (ClassCode) obj;
-		if (id != other.id)
-			return false;
 		if (methodCoverage == null) {
 			if (other.methodCoverage != null)
 				return false;

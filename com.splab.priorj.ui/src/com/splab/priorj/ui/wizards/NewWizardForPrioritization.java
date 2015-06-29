@@ -86,10 +86,10 @@ public class NewWizardForPrioritization extends Wizard implements INewWizard {
 	private void performOperation(PrioritizationItem item,  IProgressMonitor monitor) throws InterruptedException {
 		// TODO Auto-generated method stub
 		// Task 1
+		
 		monitor.beginTask("Creating new Prioritization",IProgressMonitor.UNKNOWN); 
 		boolean toDo = true;
 		while (toDo) {
-
 			PrioritizationManager manager = PrioritizationManager.getManager();
 			manager.addPrioritization(item);
 
@@ -107,6 +107,7 @@ public class NewWizardForPrioritization extends Wizard implements INewWizard {
 		String basepath = services.readLocalBase();
 		if (!basepath.equals("default")){
 			try {
+				services.refreshProject(item.getVersionName());
 				services.setLocalBasePath(basepath);
 				services.createCurrentProjectVersion(item.getProjectName(), item.getVersionName());
 

@@ -1,12 +1,26 @@
 package com.edu.ufcg.splab.priorj.coverage.controller;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import com.edu.ufcg.splab.priorj.controller.DataManager;
 import com.edu.ufcg.splab.priorj.controller.PriorJ;
 import com.edu.ufcg.splab.priorj.coverage.model.TestSuite;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * <code>TestSuiteController</code> for database methods abstraction.
@@ -14,7 +28,7 @@ import com.edu.ufcg.splab.priorj.coverage.model.TestSuite;
  * @author Berg
  *
  */
-public class TestSuiteController extends Controller {
+public class TestSuiteController {
 
 	private static TestSuiteController instance;
 	
@@ -27,87 +41,46 @@ public class TestSuiteController extends Controller {
      * Add a testSuite object into the database.
      * 
      * @param testSuite object.
+     * @throws IOException 
      */
-    public void add(final TestSuite testSuite) {
-    	this.getEntityManager().getTransaction().begin();
-    	this.getEntityManager().persist(testSuite);
-    	this.getEntityManager().getTransaction().commit();
-    }
-    
-    /**
-     * Add List<TestSuite> into the database.
-     * 
-     * @param suites
-     * 			List<TestSuite> suites.
-     */
-    public void add(final List<TestSuite> suites) {
-    	for (TestSuite testSuite : suites) {
-			add(testSuite);
-		}
-    }
-    
-    /**
-     * Remove an existing TestSuite Objects.
-     * 
-     * @param testSuite 
-     * 			TestSuite object. If the object does not exist nothing happens.
-     */
-    public void remove(final TestSuite testSuite) {
-    	this.getEntityManager().getTransaction().begin();
-    	this.getEntityManager().remove(testSuite);
-    	this.getEntityManager().getTransaction().commit();
-    }
-    
-    /**
-     * Get an existing TestSuite object.
-     * 	
-     * @param testSuite 
-     * 			TestSuite object.
-     * 
-     * @return The TestSuite object. If the object does not exist return null.
-     */
-    public TestSuite get(final TestSuite testSuite) {
-    	this.getEntityManager().getTransaction().begin();
-    	TestSuite tc = this.getEntityManager().find(TestSuite.class, testSuite);
-    	this.getEntityManager().getTransaction().commit();
-    	return tc;
-    	
+    public void save(final List<TestSuite> testSuite) throws IOException {
+    	for (TestSuite suite : testSuite) {
+			String filePath = "database/coveragePriorJ-" + suite.getPackageName() + "-" + suite.getName() + ".json";
+			Gson gson = new Gson();
+			String json = gson.toJson(suite);
+			//write converted json data to a file named "file.json"
+			System.out.println(json);
+			FileWriter writer = new FileWriter(filePath);
+			writer.write(json);
+			writer.close();
+    	}
     }
     
     /**
      * Get all objects in database.
      * 
      * @return List<TestSuite> with all objects presents in database.
+     * @throws IOException 
+     * @throws UnsupportedEncodingException 
      */
     public List<TestSuite> getAll() {
-    	TypedQuery<TestSuite> query =
-    		    this.getEntityManager().createQuery("SELECT p FROM TestSuite p", TestSuite.class);
-    	List<TestSuite> results = query.getResultList();
-    	return results;
-    }
-    
-    /**
-     * Get the quantity of all objects presents in database.
-     * 
-     * @return long with the quantity.
-     */
-    public long getQuantityObjects() {
-    	Query q1 = this.getEntityManager().createQuery("SELECT COUNT(p) FROM TestSuite p");
-    	return (long) q1.getSingleResult();
-    }
-    
-    /**
-     * Clear database.
-     */
-    public void clearDb() {
-    	TypedQuery<TestSuite> query =
-    		    this.getEntityManager().createQuery("SELECT p FROM TestSuite p", TestSuite.class);
-    	List<TestSuite> results = query.getResultList();
-    	this.getEntityManager().getTransaction().begin();
-    	for (TestSuite ts : results) {
-			this.getEntityManager().remove(ts);
+    	List<TestSuite> suites = new ArrayList<TestSuite>();
+    	List<String> jsonFileNames = DataManager.getAllFileNamesStartingWith("C:/PriorJ/workspace/priorj/com.splab.priorj.plugin/database/", "coveragePriorJ-");
+    	for (String fileName : jsonFileNames) {
+			BufferedReader reader = null;
+			try {
+				reader = new BufferedReader(new FileReader("C:/PriorJ/workspace/priorj/com.splab.priorj.plugin/database/" + fileName));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			Gson gson = new Gson();
+            TestSuite suite = gson.fromJson(reader, TestSuite.class);
+            suite.teste();
+            suites.add(suite);
 		}
-    	this.getEntityManager().getTransaction().commit();
+    	return suites;
     }
     
 }

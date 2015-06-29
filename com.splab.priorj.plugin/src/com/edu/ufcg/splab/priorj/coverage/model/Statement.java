@@ -1,14 +1,6 @@
 package com.edu.ufcg.splab.priorj.coverage.model;
 
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
-
-import javax.jdo.annotations.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 
 /*
 * PriorJ: JUnit Test Case Prioritization.
@@ -34,16 +26,9 @@ import javax.persistence.ManyToMany;
  * 
  * @author Berg Élisson
  */
-@Entity
-public class Statement implements Serializable {
+public class Statement {
 
-	private static final long serialVersionUID = 1L;
-	 
-	@Id @GeneratedValue
-    @Column(name = "ID")
-    private long id;
     private String lineNumber;
-	private List<Method> methods;
 
     /**
 	 * Empty Constructor for database requests.
@@ -67,15 +52,6 @@ public class Statement implements Serializable {
     }
 
     /**
-     * Get the id in ObjectDB.
-     * 
-     * @return Long with the database id.
-     */
-    public Long getId() {
-        return id;
-    }
-    
-    /**
      * Get the line number that is associated with this statement.
      * @return the line number.
      */
@@ -91,26 +67,6 @@ public class Statement implements Serializable {
         this.lineNumber = lineNumber;
     }
     
-    /**
-     * Get Methods.
-     * 
-     * @return Collection<Method>.
-     */
-    @ManyToMany(mappedBy="statementCoverage")
-    public List<Method> getMethods() {
-		return methods;
-	}
-
-    /**
-     * Set Methods.
-     * 
-     * @param methods
-     * 			Collection<Method> methods.
-     */
-	public void setMethods(List<Method> methods) {
-		this.methods = methods;
-	}
-
 	/**
      * Compare two objects of type <code>Statement</code> and says if are equal.
      * @param obj  a object of type <code>Statement</code>.
@@ -142,7 +98,6 @@ public class Statement implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result
 				+ ((lineNumber == null) ? 0 : lineNumber.hashCode());
 		return result;
@@ -162,8 +117,6 @@ public class Statement implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Statement other = (Statement) obj;
-		if (id != other.id)
-			return false;
 		if (lineNumber == null) {
 			if (other.lineNumber != null)
 				return false;

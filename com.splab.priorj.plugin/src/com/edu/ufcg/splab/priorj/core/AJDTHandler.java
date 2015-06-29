@@ -86,7 +86,7 @@ public class AJDTHandler  {
 	
 	private static final String  JAVA_IO_LIBRARY = "javaio-v1.0.4.jar";
 	
-	private static final String  OBJECT_DB_LIBRARY = "objectdb.jar";
+	private static final String  JSON_LIBRARY = "gson-2.3.1.jar";
 	
 	/**
 	 * Our build implementation
@@ -168,7 +168,7 @@ public class AJDTHandler  {
 		addAjrtToBuildPath(copyProject);
 		addCoverageLibraryToBuildPath(copyProject);
 		addJavaIOLibraryToBuildPath(copyProject);
-		addObjectDBLibraryToBuildPath(copyProject);
+		addJsonLibraryToBuildPath(copyProject);
 		
 		refresh(copyProjectName);
 		return copyProject;		
@@ -215,7 +215,7 @@ public class AJDTHandler  {
 				JavaRuntime.getDefaultJREContainerEntry() ,
 				JavaCore.newLibraryEntry(new Path("/"+projectName+"/lib/" + COVERAGE_LIBRARY),null, null),
 				JavaCore.newLibraryEntry(new Path("/"+projectName+"/lib/" + JAVA_IO_LIBRARY),null, null),
-				JavaCore.newLibraryEntry(new Path("/"+projectName+"/lib/" + OBJECT_DB_LIBRARY),null, null),
+				JavaCore.newLibraryEntry(new Path("/"+projectName+"/lib/" + JSON_LIBRARY),null, null),
 				junit4Entry
 		};
 		return buildPath;
@@ -350,9 +350,9 @@ public class AJDTHandler  {
 		
 	}
 	
-	public static void addObjectDBLibraryToBuildPath(IJavaProject javaProject) throws JavaModelException  {
+	public static void addJsonLibraryToBuildPath(IJavaProject javaProject) throws JavaModelException  {
 		IClasspathEntry [] originalCP = javaProject.getRawClasspath();
-		IClasspathEntry lib = JavaCore.newLibraryEntry(new Path("/"+javaProject.getElementName()+"/lib/" + OBJECT_DB_LIBRARY),null, null);
+		IClasspathEntry lib = JavaCore.newLibraryEntry(new Path("/"+javaProject.getElementName()+"/lib/" + JSON_LIBRARY),null, null);
 		boolean found = false;
 		for (int i=0; i< originalCP.length; i++) {
 			if (originalCP[i].getPath().equals(lib.getPath())) {
@@ -490,8 +490,8 @@ public class AJDTHandler  {
 		fileStream.close();
 		
 		// Copy the ObjectDB lib from PriorJ plugin.
-		url = bundle.getEntry("lib/" + OBJECT_DB_LIBRARY);
-		newLib = libFolder.getFile(OBJECT_DB_LIBRARY);
+		url = bundle.getEntry("lib/" + JSON_LIBRARY);
+		newLib = libFolder.getFile(JSON_LIBRARY);
 		fileStream = url.openConnection().getInputStream();
 		newLib.create(fileStream, false, null);
 		fileStream.close();
