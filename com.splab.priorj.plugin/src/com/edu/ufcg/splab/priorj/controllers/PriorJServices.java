@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.maven.plugins.surefire.report.ReportTestSuite;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -27,6 +28,7 @@ import com.edu.ufcg.splab.priorj.core.DifferenceVisitor;
 import com.edu.ufcg.splab.priorj.core.JUnitLaunch;
 import com.edu.ufcg.splab.priorj.core.JUnitReportFailures;
 import com.edu.ufcg.splab.priorj.coverage.controller.TestSuiteController;
+import com.edu.ufcg.splab.priorj.report.GenerateChangesCoveredReport;
 import com.edu.ufcg.splab.priorj.report.GenerateTreeData;
 import com.edu.ufcg.splab.priorj.technique.EmptySetOfTestCaseException;
 import com.edu.ufcg.splab.priorj.technique.Technique;
@@ -78,6 +80,16 @@ public class PriorJServices {
 			instance = new PriorJServices();
 		}
 		return instance;
+	}
+	
+	/**
+	 * Get the affected blocks.
+	 * 
+	 * @return List<String> with the affected blocks.
+	 * 
+	 */
+	public List<String> getAffectedBlocks() {
+		return priorj.getAffectedBlocks();
 	}
 	
 	/**
@@ -530,12 +542,21 @@ public class PriorJServices {
 		return failures;
 	}
 
-	public void saveFailures(String script) {
+	public void saveFailures(final String script) {
 		DataManager.save("failures.js", "js", script);
 	}
 
-	public String createFailureScript(List<String> failures) {
+	public void saveChanges(final String script) {
+		DataManager.save("changes.js", "js", script);
+	}
+	
+	public String createFailureScript(final List<String> failures) {
 		String script = JUnitReportFailures.createFailuresScript(failures);
+		return script;
+	}
+	
+	public String createChangeScript(final List<String> affectedBlocks) {
+		String script = GenerateChangesCoveredReport.generateCoverageReport(affectedBlocks);
 		return script;
 	}
 

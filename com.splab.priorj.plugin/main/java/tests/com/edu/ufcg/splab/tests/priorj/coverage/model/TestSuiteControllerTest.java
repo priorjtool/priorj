@@ -56,6 +56,7 @@ public class TestSuiteControllerTest {
 		List<TestSuite> suite = new ArrayList<TestSuite>();
 		TestSuite ts = createTestSuite();
 		System.out.println("Salvando");
+		
 		ts.teste();
 		for (TestCase t : ts.getTestCases()) {
 			System.out.println(t.teste());

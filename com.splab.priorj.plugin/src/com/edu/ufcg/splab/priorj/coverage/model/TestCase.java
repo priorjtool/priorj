@@ -37,7 +37,7 @@ public class TestCase {
 	private int numberMethodsCovered;
     private String signature = "";
     
-    /**
+	/**
 	 * Empty Constructor for database requests.
 	 */
     public TestCase() {
@@ -235,6 +235,7 @@ public class TestCase {
     public void setNumberMethodsCoveredDistinct(final int numberMethods){
     	numberMethodsCovered = numberMethods;
     }
+    
     
     /**
      * Compare two objects of type <code>ClassCodet</code>.

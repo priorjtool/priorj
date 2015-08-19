@@ -210,6 +210,7 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
 	public List<String> prioritize(List<TestCase> tests)throws EmptySetOfTestCaseException {
 		List<TestCase> copyList = new ArrayList<TestCase>(tests);
         ArrayList<TestCaseEchelon> weightedList = new ArrayList<TestCaseEchelon>();
+        ArrayList<TestCaseEchelon> scoredList = new ArrayList<TestCaseEchelon>();
         ArrayList<TestCase> notWeightedList = new ArrayList<TestCase>();
         
         calulateWeight(weightedList, notWeightedList, copyList);
@@ -218,7 +219,8 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
         Collections.reverse(weightedList);
         System.out.println("Weighted:");
         for (TestCaseEchelon testCase : weightedList) {
-			System.out.println(testCase);
+//			System.out.println(testCase);
+			scoredList.add(testCase);
 		}
         
         calculateScore(weightedList);
@@ -226,9 +228,15 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
         Collections.sort(weightedList, new EchelonComparator(EchelonComparator.BY_SCORE));
         Collections.reverse(weightedList);
         System.out.println("By Score:");
+        int i = 0;
         for (TestCaseEchelon testCaseEchelon : weightedList) {
-			System.out.println(testCaseEchelon);
-		}
+			System.out.println("[" + i +"] " + testCaseEchelon.getTestCase() 
+					+ " [S - " +testCaseEchelon.getScore() 
+					+ " | W - " + testCaseEchelon.getWeight() + "]"
+					+ " ------ " + scoredList.get(i).getTestCase() 
+					+ " [W - " + scoredList.get(i).getWeight() + "]");
+			i++;
+        }
         
         List<String> suiteList = getSignatureWeightedList(weightedList);
     	this.weightList = new ArrayList<String> (suiteList);

@@ -41,6 +41,7 @@ public class GenerateCoverageReport {
 	private List<String> classes;
 	private List<String> methods;
 	private List<String> statements;
+	private List<String> affectedBlocks;
 	
     /**
      * Constructor.
@@ -48,12 +49,13 @@ public class GenerateCoverageReport {
      * @param suites
      *      A list of Test suites.
      */
-	public GenerateCoverageReport(List<TestSuite> suites){
+	public GenerateCoverageReport(final List<TestSuite> suites, final List<String> affectedBlocks){
 		this.suites = suites;
 		this.testCases = new ArrayList<String>();
 		this.classes = new ArrayList<String>();
 		this.methods = new ArrayList<String>();
 		this.statements = new ArrayList<String>();
+		this.affectedBlocks = affectedBlocks;
 	}
 	
     /**
@@ -87,9 +89,20 @@ public class GenerateCoverageReport {
           		builder.append("\tcoverage.push({\n");
           		builder.append("\t\ttestsuite  : '"+suiteName+"',\n");
           		builder.append("\t\ttestcase   : '"+testcase.getName()+"',\n");
-          		builder.append("\t\tclasses    : "+getCountUniqueClassCoverage(testcase)+",\n");
-          		builder.append("\t\tmethods    : "+getCountUniqueMethodCoverage(testcase)+",\n");
-          		builder.append("\t\tstatements : "+getCountUniqueStatementCoverage(testcase));
+          		builder.append("\t\tclasses    : "+getCountUniqueClassCoverage(testcase) + ",\n");
+          		builder.append("\t\tmethods    : "+getCountUniqueMethodCoverage(testcase) + ",\n");
+          		builder.append("\t\tstatements : "+getCountUniqueStatementCoverage(testcase) + ",\n");
+          		
+          		builder.append("\t\tchangesCovered : [");
+          		List<String> changes = this.getTestCaseChangesCovered(testcase);
+          		for (String cc : changes) {
+          			builder.append("'" + cc + "'" + ",");
+				}
+          		// Deleta a última vírgula.
+          		if(!changes.isEmpty()) {
+          			builder.deleteCharAt(builder.length()-1);
+          		}
+          		builder.append("]");
           		builder.append("\n\t});\n");
           	}
           }
@@ -204,6 +217,16 @@ public class GenerateCoverageReport {
 			}
 		}
 		return count;
+	}
+	
+	public List<String> getTestCaseChangesCovered(TestCase tc) {
+		List<String> sttms = new ArrayList<String>();
+		for (String sttm : tc.getStatementsCoverage()) {
+			if(!sttms.contains(sttm) && this.affectedBlocks.contains(sttm)) {
+				sttms.add(sttm);
+			}
+		}
+		return sttms;
 	}
 
 }

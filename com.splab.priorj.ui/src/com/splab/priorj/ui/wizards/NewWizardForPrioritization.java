@@ -161,6 +161,21 @@ public class NewWizardForPrioritization extends Wizard implements INewWizard {
 
 					monitor.worked(1);
 				}
+				
+				//Task 5 * 1/2
+				monitor.beginTask("Saving the Changes...", IProgressMonitor.UNKNOWN);
+				toDo = true;
+				while (toDo) {
+					if (monitor.isCanceled())
+						throw new InterruptedException("Canceled by user");
+
+					List<String> changeList = services.getAffectedBlocks();
+					String scriptCode = services.createChangeScript(changeList); 
+					services.saveChanges(scriptCode);
+					toDo = false;
+
+					monitor.worked(1);
+				}
 
 				//Task 6
 				monitor.beginTask("Wait, Making Prioritization and Saving Results...", IProgressMonitor.UNKNOWN);

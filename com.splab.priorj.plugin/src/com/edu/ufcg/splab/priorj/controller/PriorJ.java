@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.maven.plugins.surefire.report.ReportTestSuite;
+
 import com.edu.ufcg.splab.core.Difference;
 import com.edu.ufcg.splab.core.InstrumentClass;
 import com.edu.ufcg.splab.coverage.manager.Coverage;
@@ -12,7 +14,6 @@ import com.edu.ufcg.splab.priorj.report.GenerateExecutionOrderReport;
 import com.edu.ufcg.splab.priorj.report.GenerateTestSuite;
 import com.edu.ufcg.splab.priorj.report.GenerateTestSuiteForJUnit4;
 import com.edu.ufcg.splab.priorj.technique.*;
-
 import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
 import com.edu.ufcg.splab.priorj.coverage.model.TestSuite;
 
@@ -349,10 +350,20 @@ public class PriorJ {
 	 * @return
 	 */
 	public String createCoverageReport(List<TestSuite> suites) {
-		GenerateCoverageReport textReport = new GenerateCoverageReport(suites);
+		GenerateCoverageReport textReport = new GenerateCoverageReport(suites, this.affectedBlocks);
 		return textReport.generateCoverageReport();
 	}
 
+	/**
+	 * Get the affected blocks.
+	 * 
+	 * @return List<String> with the affected blocks.
+	 * 
+	 */
+	public List<String> getAffectedBlocks() {
+		return this.affectedBlocks;
+	}
+	
 	/**
 	 * This method instrument a class.
 	 * 
@@ -386,8 +397,7 @@ public class PriorJ {
 		List<String> affected = difference.getStatementsDiff();
 		return affected;
 	}
-
-
+	
 	/**
 	 * 
 	 * @param blocks

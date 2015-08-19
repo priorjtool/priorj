@@ -95,7 +95,6 @@ public class TestCaseEchelon {
 	@Override
 	public String toString() {
 		return "TestCaseEchelonComparable [weight=" + weight + ", testCase="
-				+ testCase + ", statementCoverage=" + statementCoverage
-				+ ", score=" + score + "]";
+				+ testCase + ", score=" + score + "]";
 	}
 }

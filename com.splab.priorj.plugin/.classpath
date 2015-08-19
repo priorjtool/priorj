@@ -13,5 +13,7 @@
 	<classpathentry kind="lib" path="C:/PriorJ/workspace/priorj/com.splab.priorj.plugin/lib/objectdb.jar"/>
 	<classpathentry kind="lib" path="lib/json-simple-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gson-2.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/surefire-report-parser-2.14.1.jar"/>
+	<classpathentry kind="lib" path="lib/maven-reporting-api-2.0.9.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

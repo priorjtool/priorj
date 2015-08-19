@@ -219,7 +219,6 @@ public class DataManager {
 	/**
 	 * This method build a current path where data are saved.
 	 * 
-	 * 
 	 * @return
 	 *   localBase/project/version/
 	 */
