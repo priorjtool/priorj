@@ -18,14 +18,7 @@ package com.edu.ufcg.splab.priorj.report;
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-import java.util.ArrayList;
 import java.util.List;
-
-import com.edu.ufcg.splab.priorj.coverage.model.ClassCode;
-import com.edu.ufcg.splab.priorj.coverage.model.Method;
-import com.edu.ufcg.splab.priorj.coverage.model.Statement;
-import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
-import com.edu.ufcg.splab.priorj.coverage.model.TestSuite;
 
 /**
  * This class generate a simple coverage report.

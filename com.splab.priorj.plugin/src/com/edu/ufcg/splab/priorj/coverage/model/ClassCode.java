@@ -21,10 +21,6 @@ package com.edu.ufcg.splab.priorj.coverage.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
 /**
  * <code>ClassCode</code> represents a class inside the application, 
  * containing the package name, class name and a list of methods found in class.

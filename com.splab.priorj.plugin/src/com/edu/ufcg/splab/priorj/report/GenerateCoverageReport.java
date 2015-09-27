@@ -74,7 +74,19 @@ public class GenerateCoverageReport {
             builder.append("\ttestcases: "+testCases.size()+",\n");
             builder.append("\tclasses: "+classes.size()+",\n");
             builder.append("\tmethods: "+methods.size()+",\n");
-            builder.append("\tstatements: "+statements.size());
+            builder.append("\tstatements: "+statements.size()+",\n");
+            builder.append("\tchangesCovered: [");
+        	for (int i = 0; i < affectedBlocks.size(); i++) {
+        		String change = affectedBlocks.get(i);
+        		if(statements.contains(change)) {
+        			builder.append("'" + change + "',");
+        		}
+			}
+        	if(builder.charAt(builder.length()-1) == ',') {
+        		builder.deleteCharAt(builder.length()-1);
+        	}
+        	builder.append("]");
+            
             builder.append("\n};\n\n");
             
             builder.append("$(function(){\n");

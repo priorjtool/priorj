@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.maven.plugins.surefire.report.ReportTestSuite;
-
 import com.edu.ufcg.splab.core.Difference;
 import com.edu.ufcg.splab.core.InstrumentClass;
 import com.edu.ufcg.splab.coverage.manager.Coverage;

@@ -30,8 +30,6 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import com.thoughtworks.xstream.XStream;

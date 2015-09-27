@@ -5,22 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-
 import com.edu.ufcg.splab.priorj.controller.DataManager;
-import com.edu.ufcg.splab.priorj.controller.PriorJ;
 import com.edu.ufcg.splab.priorj.coverage.model.TestSuite;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * <code>TestSuiteController</code> for database methods abstraction.

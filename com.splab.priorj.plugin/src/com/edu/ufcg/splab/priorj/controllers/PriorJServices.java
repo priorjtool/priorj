@@ -3,11 +3,9 @@ package com.edu.ufcg.splab.priorj.controllers;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.plugins.surefire.report.ReportTestSuite;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -15,9 +13,6 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.PartInitException;
 
-import com.edu.ufcg.splab.priorj.coverage.model.ClassCode;
-import com.edu.ufcg.splab.priorj.coverage.model.Method;
-import com.edu.ufcg.splab.priorj.coverage.model.Statement;
 import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
 import com.edu.ufcg.splab.priorj.coverage.model.TestSuite;
 import com.edu.ufcg.splab.coverage.manager.Coverage;

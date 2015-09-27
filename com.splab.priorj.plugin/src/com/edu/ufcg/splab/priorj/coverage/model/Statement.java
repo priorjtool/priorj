@@ -1,7 +1,5 @@
 package com.edu.ufcg.splab.priorj.coverage.model;
 
-import java.util.List;
-
 /*
 * PriorJ: JUnit Test Case Prioritization.
 * 
