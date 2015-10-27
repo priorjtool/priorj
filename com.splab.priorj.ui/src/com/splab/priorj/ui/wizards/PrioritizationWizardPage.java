@@ -71,13 +71,13 @@ public class PrioritizationWizardPage extends WizardPage {
 
 	//Spinner and default size for suite selection
 	private Spinner spinner;
-	private int suiteSize = 10;
+	private int suiteSize = 100;
 	
 	//Control selected techniques
 	List<String> added;
 	
 	//flags
-	private boolean defaultJUnitVersion3 = true;
+	private boolean defaultJUnitVersion3 = false;
 	
 	protected PrioritizationWizardPage() {
 		super("New Prioritization");
@@ -222,7 +222,8 @@ public class PrioritizationWizardPage extends WizardPage {
 	private void createButtonCB() {
 		btnCbCB = new Button(groupCheckboxes, SWT.CHECK);
 		btnCbCB.setText("Changed Blocks (CB)");
-		
+		// Retirar essa linhas
+		btnCbCB.setSelection(true);
 		btnCbCB.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e){
 				if (e.getSource() == btnCbCB ){
@@ -240,6 +241,8 @@ public class PrioritizationWizardPage extends WizardPage {
 	private void createButtonRBA() {
 		btnCbRBA = new Button(groupCheckboxes, SWT.CHECK);
 		btnCbRBA.setText("Echelon Changed");
+		// Retirar essa linhas
+		btnCbRBA.setSelection(true);
 		
 		btnCbRBA.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e){
@@ -260,7 +263,8 @@ public class PrioritizationWizardPage extends WizardPage {
 		btnCbRND.setText("Random (RND)");
 
 		added.add("RND");
-//		btnCbRND.setSelection(true);
+		// Retirar essa linhas
+		btnCbRND.setSelection(true);
 
 		btnCbRND.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e){

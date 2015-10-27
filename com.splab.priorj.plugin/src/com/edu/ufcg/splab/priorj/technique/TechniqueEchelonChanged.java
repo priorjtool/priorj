@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
 
@@ -37,12 +38,18 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
 	
 	private List<String> affectedBlocks;
 	
+	private Map<String, List<String>> deletedCoverages;
+	
     public List<String> getAffectedBlocks() {
 		return affectedBlocks;
 	}
 
 	public void setAffectedBlocks(List<String> affectedBlocks) {
 		this.affectedBlocks = affectedBlocks;
+	}
+	
+	public void setDeletedCoverages(Map<String, List<String>> deletedCoverages) {
+		this.deletedCoverages = deletedCoverages;
 	}
 	
 	public boolean containsBlock(final String block){
@@ -94,7 +101,12 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
     private void calulateWeight(List<TestCaseEchelon> weightedList, List<TestCase> notWeightedList,
     		final List<TestCase> copyList) {
     	for (TestCase testCase : copyList) {
-        	List<String> statementCoverage = getWeight(testCase.getStatementsCoverage());
+        	List<String> weight = testCase.getStatementsCoverage();
+        	List<String> deleted = deletedCoverages.get(testCase.getSignature());
+        	if(deleted != null) {
+        		weight.addAll(deleted);
+        	}
+    		List<String> statementCoverage = getWeight(weight);
         	if (statementCoverage.size() != 0.0) {
         		weightedList.add(new TestCaseEchelon(getPercentage(statementCoverage.size()),
         				testCase, statementCoverage));
@@ -219,7 +231,6 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
         Collections.reverse(weightedList);
         System.out.println("Weighted:");
         for (TestCaseEchelon testCase : weightedList) {
-//			System.out.println(testCase);
 			scoredList.add(testCase);
 		}
         

@@ -13,7 +13,7 @@ import com.edu.ufcg.splab.coverage.annotations.*;
  * @version 1.0 
  *
  */
-public aspect AspectCoverage {
+public aspect AspectCoverageOriginal {
 	private Repository repository;
 //	private Logger logger = Logger.getLogger("trace");
 	pointcut traceMethods() : execution(@MethodDeclaration * *(..)) && !within(AspectCoverage);
@@ -24,8 +24,8 @@ public aspect AspectCoverage {
 	
 	after(): afterRunSuite(){
 		if(repository != null){
-			repository.commit();
-			repository.finishCommit();
+			repository.commitOriginal();
+			repository.finishCommitOriginal();
 		}
 	}
 	

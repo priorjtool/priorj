@@ -168,9 +168,10 @@ public class NewWizardForPrioritization extends Wizard implements INewWizard {
 				while (toDo) {
 					if (monitor.isCanceled())
 						throw new InterruptedException("Canceled by user");
-
+					services.insertDeletedChangesIntoAffectedBlocks();
 					List<String> changeList = services.getAffectedBlocks();
-					String scriptCode = services.createChangeScript(changeList); 
+					List<String> deleted = services.getAffectedBlocksWithDeletedStatements();
+					String scriptCode = services.createChangeScript(deleted); 
 					services.saveChanges(scriptCode);
 					toDo = false;
 

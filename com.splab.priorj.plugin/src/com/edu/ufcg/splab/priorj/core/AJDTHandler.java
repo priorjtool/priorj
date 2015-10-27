@@ -97,6 +97,11 @@ public class AJDTHandler  {
 	 */
 	private static final String ASPECT_FILE = "AspectCoverage.aj";
 	
+	/**
+	 * Aspect coverage path for original project.
+	 */
+	private static final String ASPECT_ORIGINAL_FILE = "AspectCoverageOriginal.aj";
+	
 	
 	
 	/**
@@ -153,7 +158,7 @@ public class AJDTHandler  {
 	 * @throws CoreException 
 	 * @throws IOException 
 	 */
-	public IJavaProject copyProject(String originalProjectName, String copyProjectName) throws CoreException, IOException {
+	public IJavaProject copyProject(String originalProjectName, String copyProjectName, final boolean isOriginal) throws CoreException, IOException {
 		IJavaProject copyProject = createProject(copyProjectName);
 		String origin = getFullProjectPath(originalProjectName);
 		String destiny = getFullProjectPath(copyProjectName);
@@ -162,7 +167,8 @@ public class AJDTHandler  {
 		IProject project = getProject(copyProjectName);
 		visitor = new ProjectVisitor();
 		project.accept(visitor, IResource.NONE);
-		copyLibrariesDependencies(copyProjectName);
+		// ASPECT FILE HERE.
+		copyLibrariesDependencies(copyProjectName, isOriginal);
 		convertToAspectJProject(getProject(copyProjectName));
 		
 		addAjrtToBuildPath(copyProject);
@@ -376,7 +382,7 @@ public class AJDTHandler  {
 	 * @param projectName
 	 * @throws CoreException
 	 */
-	public void copyLibrariesDependencies(String projectName) throws CoreException {
+	public void copyLibrariesDependencies(String projectName, final boolean isOriginal) throws CoreException {
 		IFolder libFolder = getProject(projectName).getFolder("lib");
 		IFolder reportFolder = getProject(projectName).getFolder("report");
 		try {
@@ -393,7 +399,7 @@ public class AJDTHandler  {
 				reportFolder.create(true, false, null);
 				copyReportResourcesTo(reportFolder);
 			}
-			loacateFolderSrcToInsertAspectCode(projectName);
+			loacateFolderSrcToInsertAspectCode(projectName, isOriginal);
 		}
 		catch(IOException e) {
 			e.printStackTrace();
@@ -408,7 +414,7 @@ public class AJDTHandler  {
 	 * @throws CoreException 
 	 * @throws IOException 
 	 */
-	private void loacateFolderSrcToInsertAspectCode(String projectName) throws CoreException, IOException {
+	private void loacateFolderSrcToInsertAspectCode(String projectName, final boolean isOriginal) throws CoreException, IOException {
 		IJavaProject javaProject = JavaCore.create(getProject(projectName));
 		for (IClasspathEntry entry : javaProject.getRawClasspath()) {
 			//only at the package from the source folder
@@ -422,11 +428,20 @@ public class AJDTHandler  {
 				}
 				IFolder srcFolder = getProject(projectName).getFolder(folderName);
 				if (!srcFolder.exists()) {
-					srcFolder.create(true, false, null);
-					copyAspectFile(srcFolder);
+					if(!isOriginal) {
+						srcFolder.create(true, false, null);
+						copyAspectFile(srcFolder);
+					} else {
+						srcFolder.create(true, false, null);
+						copyAspectFileOriginal(srcFolder);
+					}
 				}
 				else {
-					copyAspectFile(srcFolder);
+					if(!isOriginal) {
+						copyAspectFile(srcFolder);
+					} else {
+						copyAspectFileOriginal(srcFolder);
+					}
 				}
 				break;
 			}
@@ -459,6 +474,36 @@ public class AJDTHandler  {
 		Bundle bundle = Platform.getBundle("com.splab.priorj.plugin");
 		url = bundle.getEntry("data/"+ASPECT_FILE);
 		IFile newFile = srcFolder.getFile(ASPECT_FILE);
+		InputStream fileStream = url.openConnection().getInputStream();
+		newFile.create(fileStream, false, null);
+		fileStream.close();
+	}
+	
+	/**
+	 * This method add the aspect file original to src folder from project.
+	 * 
+	 * Works too!
+	 * 
+	 * Bundle bundle = Platform.getBundle("com.splab.priorj.plugin");
+	 * URL url = bundle.getEntry("data/"+ASPECT_ORIGINAL_FILE);
+	 * 
+	 * Plugin install name example
+	 * com.splab.priorj.plugin_1.0.0.201405280013
+	 * 
+	 * PLUGIN ID
+	 * com.edu.ufcg.splab.priorj
+	 * Development Bundle name
+	 * com.splab.priorj.plugin
+	 * 
+	 * @param srcFolder
+	 * @throws IOException
+	 * @throws CoreException
+	 */
+	public static void copyAspectFileOriginal(IFolder srcFolder) throws IOException, CoreException {
+		URL url;
+		Bundle bundle = Platform.getBundle("com.splab.priorj.plugin");
+		url = bundle.getEntry("data/"+ASPECT_ORIGINAL_FILE);
+		IFile newFile = srcFolder.getFile(ASPECT_ORIGINAL_FILE);
 		InputStream fileStream = url.openConnection().getInputStream();
 		newFile.create(fileStream, false, null);
 		fileStream.close();

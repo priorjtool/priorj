@@ -73,7 +73,7 @@ public class DifferenceVisitor implements IResourceProxyVisitor  {
 					System.out.println("File: " + filePath + " X " + oldFilePath + " :Old");
 					checkingDifferences(filePath, oldFilePath);
 					System.out.println("Old: " + oldFilePath + " X " + filePath + " :File");
-					checkingDifferences(oldFilePath,filePath);
+					checkingDifferences(oldFilePath, filePath);
 				}
 			}
 	}
@@ -87,9 +87,13 @@ public class DifferenceVisitor implements IResourceProxyVisitor  {
 	private void checkingDifferences(String filePath, String oldFilePath) {
 		Difference difference = new Difference(filePath, oldFilePath);
 		difference.diff();
-		List<String> affected = difference.getStatementsDiff();
+		List<String> affected = difference.getBlockDiff();
+		List<String> affectedStatement = difference.getStatementDiff();
 		if (!affected.isEmpty()) {
 			differences.addAll(affected);
+			System.out.println("FIIIIIIIMMMMMMMMMMM");
+			System.out.println(differences.size());
+			System.out.println(differences);
 		}
 	}
 

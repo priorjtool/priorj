@@ -51,34 +51,34 @@ public class TestSuiteControllerTest {
 		return ts;
 	}
 	
-	@Test
-	public void test() {
-		List<TestSuite> suite = new ArrayList<TestSuite>();
-		TestSuite ts = createTestSuite();
-		System.out.println("Salvando");
-		
-		ts.teste();
-		for (TestCase t : ts.getTestCases()) {
-			System.out.println(t.teste());
-		}
-		suite.add(ts);
-		try {
-			this.controller.save(suite);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		System.out.println("From Database");
-		suite = this.controller.getAll();
-		for (TestSuite testSuite : suite) {
-			testSuite.teste();
-			for (TestCase t : testSuite.getTestCases()) {
-				System.out.println(t.teste());
-			}
-		}
-		
-	}
+//	@Test
+//	public void test() {
+//		List<TestSuite> suite = new ArrayList<TestSuite>();
+//		TestSuite ts = createTestSuite();
+//		System.out.println("Salvando");
+//		
+//		ts.teste();
+//		for (TestCase t : ts.getTestCases()) {
+//			System.out.println(t.teste());
+//		}
+//		suite.add(ts);
+//		try {
+//			this.controller.save(suite);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		System.out.println("From Database");
+//		suite = this.controller.getAll();
+//		for (TestSuite testSuite : suite) {
+//			testSuite.teste();
+//			for (TestCase t : testSuite.getTestCases()) {
+//				System.out.println(t.teste());
+//			}
+//		}
+//		
+//	}
 	
 //	@Test
 //	public void testAdd() {

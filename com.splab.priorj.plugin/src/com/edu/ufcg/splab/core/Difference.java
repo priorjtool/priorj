@@ -1,23 +1,23 @@
 package com.edu.ufcg.splab.core;
 
 /*
-* PriorJ: JUnit Test Case Prioritization.
-* 
-* Copyright (C) 2011-2012  Julio Henrique
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * PriorJ: JUnit Test Case Prioritization.
+ * 
+ * Copyright (C) 2011-2012  Julio Henrique
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 import japa.parser.JavaParser;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.body.BodyDeclaration;
@@ -36,348 +36,500 @@ import japa.parser.ast.stmt.WhileStmt;
 import japa.parser.ast.type.Type;
 
 import java.io.FileInputStream;
-
 import java.util.ArrayList;
-
 import java.util.List;
 
 
 
 public class Difference {
 
-    private List<String> fieldDiff;
+	private static final String DOT 			= ".";
+	private static final String PARENTHESES		= "()";
+	
+	private List<String> fieldDiff;
+	private List<String> blockDiff;
+	private List<String> statementDiff;
 
-    private List<String> statementsDiff;
+	CompilationUnit compChanged;
+	CompilationUnit compOld;
 
-    CompilationUnit compNormal;
+	private String className;
 
-    CompilationUnit compOld;
+	public String getClassName() {
+		return className;
+	}
 
-    private String className;
+	public void setClassName(String className) {
+		this.className = className;
+	}
 
-    public String getClassName() {
-        
-        return className;
-    }
+	/**
+	 * Take the difference between two Java files.
+	 * 
+	 * @param changedFilePath
+	 * 			<String> With the changed file path.
+	 * @param originalFilePath
+	 * 			<String> With the original file path.
+	 */
+	public Difference(final String changedFilePath, final String originalFilePath) {
+		FileInputStream changed, old;
+		try {
+			changed = new FileInputStream(changedFilePath);
+			old = new FileInputStream(originalFilePath);
+			compChanged = JavaParser.parse(changed);
+			compOld = JavaParser.parse(old);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.fieldDiff = new ArrayList<String>();
+		this.blockDiff = new ArrayList<String>();
+		this.statementDiff = new ArrayList<String>();
+	}
 
-    public void setClassName(String className) {
+	public List<String> getBlockDiff() {
+		return blockDiff;
+	}
+	
+	public List<String> getStatementDiff() {
+		return statementDiff;
+	}
 
-        this.className = className;
-    }
+	public void setBlockDiff(List<String> blockDiff) {
+		this.blockDiff = blockDiff;
+	}
 
-    public Difference(String path, String pathOld) {
-        FileInputStream normal, modified;
-        try {
-            normal = new FileInputStream(path);
-            modified = new FileInputStream(pathOld);
-            compNormal = JavaParser.parse(normal);
-            compOld = JavaParser.parse(modified);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        this.fieldDiff = new ArrayList<String>();
-        this.statementsDiff = new ArrayList<String>();
-    }
+	public boolean contaisFieldInDiff(String str) {
+		return fieldDiff.contains(str);
+	}
 
-    public List<String> getStatementsDiff() {
-        
-        return statementsDiff;
-    }
+	public void diff() {
+		/**
+		 * Lists to the changed code version.
+		 */
+		List<ConstructorDeclaration> changedConstructor = new ArrayList<ConstructorDeclaration>();
+		List<BodyDeclaration> changedFields = new ArrayList<BodyDeclaration>();
+		List<MethodDeclaration> changedMethods = new ArrayList<MethodDeclaration>();
+		
+		/**
+		 * Lists to the old code version.
+		 */
+		List<ConstructorDeclaration> originalConstructor = new ArrayList<ConstructorDeclaration>();
+		List<BodyDeclaration> originalFields = new ArrayList<BodyDeclaration>();
+		List<MethodDeclaration> originalMethods = new ArrayList<MethodDeclaration>();
 
-    public void setStatementsDiff(List<String> statementsDiff) {
-        
-        this.statementsDiff = statementsDiff;
-    }
 
-    public boolean contaisFieldInDiff(String str) {
-        
-        return fieldDiff.contains(str);
-    }
+		//handler the constructor
+		for (TypeDeclaration typeDeclaration : compChanged.getTypes()) {
+			setClassName(compChanged.getPackage().getName() + Difference.DOT + typeDeclaration.getName());
+			List<BodyDeclaration> body = typeDeclaration.getMembers();
+			for (BodyDeclaration bodyDeclaration : body) {
+				if (bodyDeclaration instanceof FieldDeclaration) {
+					changedFields.add(bodyDeclaration);
+				}
+				else if (bodyDeclaration instanceof ConstructorDeclaration) {
+					changedConstructor.add((ConstructorDeclaration) bodyDeclaration);
+				}
+			}
+		}
 
-    public void diff() {
-        
-        List<BodyDeclaration> normalFields = new ArrayList<BodyDeclaration>();
-        
-        List<BodyDeclaration> modFields = new ArrayList<BodyDeclaration>();
-        
-        List<MethodDeclaration> normalMethods = new ArrayList<MethodDeclaration>();
-        
-        List<MethodDeclaration> modMethods = new ArrayList<MethodDeclaration>();
-        
-        /**
-         * List to constructor normal in the old version
-         */
-        List<ConstructorDeclaration> normalConstructor = new ArrayList<ConstructorDeclaration>();
-        /**
-         * List to constructor modified in the new version
-         */
-        List<ConstructorDeclaration> modConstructor = new ArrayList<ConstructorDeclaration>();
-        
-        
-        //handler the constructor
+		for (TypeDeclaration typeDeclaration : compOld.getTypes()) {
 
-        for (TypeDeclaration typeDeclaration : compNormal.getTypes()) {
-            setClassName(compNormal.getPackage().getName() +"."+typeDeclaration.getName());
-            List<BodyDeclaration> body = typeDeclaration.getMembers();
-            for (BodyDeclaration bodyDeclaration : body) {
-                if (bodyDeclaration instanceof FieldDeclaration)
-                	normalFields.add(bodyDeclaration); 
-                else if (bodyDeclaration instanceof ConstructorDeclaration) {
-                    normalConstructor.add((ConstructorDeclaration) bodyDeclaration);
-                }
-            }
-        }
-        
-        for (TypeDeclaration typeDeclaration : compOld.getTypes()) {
-            
-            List<BodyDeclaration> body = typeDeclaration.getMembers();
-            
-            for (BodyDeclaration bodyDeclaration : body) {
-                if (bodyDeclaration instanceof FieldDeclaration)
-                	modFields.add(bodyDeclaration);
-                else if (bodyDeclaration instanceof ConstructorDeclaration)
-                	modConstructor.add((ConstructorDeclaration) bodyDeclaration);
-            }
-        }
-        
-        for (TypeDeclaration typeDeclaration : compNormal.getTypes()) {
-            setClassName(compNormal.getPackage().getName() +"."+typeDeclaration.getName());
-            List<BodyDeclaration> body = typeDeclaration.getMembers();
-            for (BodyDeclaration bodyDeclaration : body) {
-                if (bodyDeclaration instanceof FieldDeclaration) normalFields.add(bodyDeclaration); else if (bodyDeclaration instanceof MethodDeclaration) {
-                    normalMethods.add((MethodDeclaration) bodyDeclaration);
-                }
-            }
-        }
-        
-        for (TypeDeclaration typeDeclaration : compOld.getTypes()) {
-            
-            List<BodyDeclaration> body = typeDeclaration.getMembers();
-            
-            for (BodyDeclaration bodyDeclaration : body) {
-                if (bodyDeclaration instanceof FieldDeclaration) modFields.add(bodyDeclaration); else if (bodyDeclaration instanceof MethodDeclaration) modMethods.add((MethodDeclaration) bodyDeclaration);
-            }
-        }
+			List<BodyDeclaration> body = typeDeclaration.getMembers();
 
-        // verify the constructor differences
-        diffConstructors(normalConstructor, modConstructor);
-        diffMethods(normalMethods, modMethods);
-    }
+			for (BodyDeclaration bodyDeclaration : body) {
+				if (bodyDeclaration instanceof FieldDeclaration) {
+					originalFields.add(bodyDeclaration);
+				}
+				else if (bodyDeclaration instanceof ConstructorDeclaration) {
+					originalConstructor.add((ConstructorDeclaration) bodyDeclaration);
+				}
+			}
+		}
 
-    private void diffConstructors(List<ConstructorDeclaration> normal, List<ConstructorDeclaration> mod) {
-        
-        for (ConstructorDeclaration constructorDeclaration : normal) {
-            
-            checkConstructors(constructorDeclaration, mod);
-        }
-    }
-    
-  private void checkConstructors(ConstructorDeclaration constructor, List<ConstructorDeclaration> lista) {
-        
-    	boolean encontrou = false;
-        for (ConstructorDeclaration constr : lista) {
-            String assinaturaMethod = generateAssignatureConstructor(constructor);
-            
-            String assinaturaConstr = generateAssignatureConstructor(constr);
-            
-            if (assinaturaMethod.equals(assinaturaConstr)) {
-            	encontrou = true;
-                boolean isDiff = isDiffConstructors(constructor.getBlock(), constr.getBlock());
-                if (isDiff) {
-                    List<String> lines = new ArrayList<String>();
-                    for (Statement stt : constructor.getBlock().getStmts()) {
-                        lines.addAll(getAllLineStatementsMethod(stt, constructor.getName()));
-                    }
-                    statementsDiff.addAll(lines);
-                }
-            }
-        }
-        if(!encontrou){
-        	List<String> lines = new ArrayList<String>();
-            for (Statement stt : constructor.getBlock().getStmts()) {
-                lines.addAll(getAllLineStatementsMethod(stt, constructor.getName()));
-            }
-            statementsDiff.addAll(lines);
-        }
-    }
-    
+		for (TypeDeclaration typeDeclaration : compChanged.getTypes()) {
+			setClassName(compChanged.getPackage().getName() +Difference.DOT+typeDeclaration.getName());
+			List<BodyDeclaration> body = typeDeclaration.getMembers();
+			for (BodyDeclaration bodyDeclaration : body) {
+				if (bodyDeclaration instanceof FieldDeclaration) {
+					changedFields.add(bodyDeclaration); 
+				}
+				else if (bodyDeclaration instanceof MethodDeclaration) {
+					changedMethods.add((MethodDeclaration) bodyDeclaration);
+				}
+			}
+		}
 
-    
-    private void diffMethods(List<MethodDeclaration> normal, List<MethodDeclaration> mod) {
-        
-        for (MethodDeclaration methodDeclaration : normal) {
-            
-            checkMethods(methodDeclaration, mod);
-        }
-    }
+		for (TypeDeclaration typeDeclaration : compOld.getTypes()) {
 
-    private void checkMethods(MethodDeclaration method, List<MethodDeclaration> lista) {
-        
-    	boolean encontrou = false;
-        for (MethodDeclaration mt : lista) {
-            String assinaturaMethod = generateAssignature(method);
-            
-            String assinaturaMt = generateAssignature(mt);
-            
-            if (assinaturaMethod.equals(assinaturaMt)) {
-            	encontrou = true;
-                boolean isDiff = isDiffMethods(method.getBody(), mt.getBody());
-                if (isDiff) {
-                    List<String> lines = new ArrayList<String>();
-                    for (Statement stt : method.getBody().getStmts()) {
-                        lines.addAll(getAllLineStatementsMethod(stt, method.getName()));
-                    }
-                    statementsDiff.addAll(lines);
-                }
-            }
-        }
-        if(!encontrou){
-        	List<String> lines = new ArrayList<String>();
-            for (Statement stt : method.getBody().getStmts()) {
-                lines.addAll(getAllLineStatementsMethod(stt, method.getName()));
-            }
-            statementsDiff.addAll(lines);
-        }
-    }
-    
-  private String generateAssignatureConstructor(ConstructorDeclaration constructor) {
-    
-        String assignature = constructor.getName();;
-        
-        List<Parameter> parametros = constructor.getParameters();
-        
-        if (parametros != null) {
-            
-            for (Parameter param : constructor.getParameters()) {
-                assignature += param.getType();
-            }
-        }
-        
-        return assignature;
-    }
+			List<BodyDeclaration> body = typeDeclaration.getMembers();
 
-    private String generateAssignature(MethodDeclaration method) {
-        
-        String name = method.getName();
-       
-        Type type = method.getType();
-        String assignature = type+name;
-        
-        List<Parameter> parametros = method.getParameters();
-        
-        if (parametros != null) {
-            
-            for (Parameter param : method.getParameters()) {
-                assignature += param.getType();
-            }
-        }
-        
-        return assignature;
-    }
+			for (BodyDeclaration bodyDeclaration : body) {
+				if (bodyDeclaration instanceof FieldDeclaration) {
+					originalFields.add(bodyDeclaration); 
+				}
+				else if (bodyDeclaration instanceof MethodDeclaration) {
+					originalMethods.add((MethodDeclaration) bodyDeclaration);
+				}
+			}
+		}
 
-    private List<String> getAllLineStatementsMethod(Statement state, String assinaturaMethod) {
-        
-        List<String> stmts = new ArrayList<String>();
-        
-        if (state == null) return stmts;
-        
-        if (state instanceof BlockStmt) {
-            
-            BlockStmt bloco = (BlockStmt) state;
-            
-            for (Statement st : bloco.getStmts()) {
-                stmts.addAll(getAllLineStatementsMethod(st, assinaturaMethod));
-            }
-        } else if (state instanceof IfStmt) {
-            
-        	String line = getClassName() +"."+assinaturaMethod+"()."+ state.getBeginLine();
-            stmts.add(line);
-            
-            IfStmt ifSt = (IfStmt) state;
-            
-            stmts.addAll(getAllLineStatementsMethod(ifSt.getThenStmt(),assinaturaMethod));
-            
-            stmts.addAll(getAllLineStatementsMethod(ifSt.getElseStmt(), assinaturaMethod));
-        } else if (state instanceof ForStmt) {
-            
-        	String line = getClassName() +"."+assinaturaMethod+"()."+ state.getBeginLine();
-        	stmts.add(line);
-            
-            ForStmt forSt = (ForStmt) state;
-            
-            stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), assinaturaMethod));
-        } else if (state instanceof ForeachStmt) {
-            
-        	String line = getClassName() +"."+assinaturaMethod+"()."+ state.getBeginLine();
-            stmts.add(line);
-            
-            ForeachStmt forSt = (ForeachStmt) state;
-            
-            stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), assinaturaMethod));
-        } else if (state instanceof WhileStmt) {
-            
-        	String line = getClassName() +"."+assinaturaMethod+"()."+ state.getBeginLine();
-            stmts.add(line);
-            
-            WhileStmt forSt = (WhileStmt) state;
-            
-            stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), assinaturaMethod));
-        } else if (state instanceof TryStmt) {
-        	String line = getClassName() +"."+assinaturaMethod+"()."+ state.getBeginLine();
-            stmts.add(line);
-            
-            TryStmt trySt = (TryStmt) state;
-            
-            stmts.addAll(getAllLineStatementsMethod(trySt.getTryBlock(), assinaturaMethod));
-            
-            stmts.addAll(getAllLineStatementsMethod(trySt.getFinallyBlock(), assinaturaMethod));
-        } else {
-            
-        	String line = getClassName() +"."+assinaturaMethod+"()."+ state.getBeginLine();
-            
-            if (!state.toString().contains("watchPrior")) {
-                stmts.add(line);
-            }
-        }
-        
-        return stmts;
-    }
+		// verify the constructor differences
+		diffConstructors(changedConstructor, originalConstructor);
+		diffMethods(changedMethods, originalMethods);
+	}
 
-    private boolean isDiffConstructors(BlockStmt blockNormal, BlockStmt blockMod) {
-    	return isDiffMethods(blockNormal, blockMod);
-    }
+	private void diffConstructors(List<ConstructorDeclaration> normal, List<ConstructorDeclaration> mod) {
 
-    
-    private boolean isDiffMethods(BlockStmt blockNormal, BlockStmt blockMod) {
-        
-        List<Statement> stNormal = null;
-        
-        List<Statement> stMod = null;
-        
-        if (blockNormal != null) stNormal = blockNormal.getStmts();
-        
-        if (blockMod != null) stMod = blockMod.getStmts();
-        
-        if (stNormal == stMod) return false;
-        
-        // Bug fixing - Berg
-        if (stNormal == null && stMod != null) return true;
-        
-        if (stNormal != null && stMod == null) return true;
-        
-        if (stNormal.size() != stMod.size()) return true;
-        
-        for (int i = 0; i < stNormal.size(); i++) {
-            
-            if (!isEqualsStatement(stNormal.get(i), stMod.get(i))) return true;
-        }
-        
-        return false;
-    }
+		for (ConstructorDeclaration constructorDeclaration : normal) {
 
-    private boolean isEqualsStatement(Statement normalSt, Statement modSt) {
-        
-        return normalSt.toString().equals(modSt.toString());
-    }
+			checkConstructors(constructorDeclaration, mod);
+		}
+	}
+
+	private void checkConstructors(ConstructorDeclaration constructor, List<ConstructorDeclaration> lista) {
+
+		boolean encontrou = false;
+		for (ConstructorDeclaration constr : lista) {
+			String assinaturaMethod = generateAssignatureConstructor(constructor);
+
+			String assinaturaConstr = generateAssignatureConstructor(constr);
+
+			if (assinaturaMethod.equals(assinaturaConstr)) {
+				encontrou = true;
+				boolean isDiff = isDiffConstructors(constructor.getBlock(), constr.getBlock());
+				if (isDiff) {
+					List<String> lines = new ArrayList<String>();
+					for (Statement stt : constructor.getBlock().getStmts()) {
+						lines.addAll(getAllLineStatementsMethod(stt, constructor.getName()));
+					}
+					blockDiff.addAll(lines);
+				}
+			}
+		}
+		if(!encontrou){
+			List<String> lines = new ArrayList<String>();
+			for (Statement stt : constructor.getBlock().getStmts()) {
+				lines.addAll(getAllLineStatementsMethod(stt, constructor.getName()));
+			}
+			blockDiff.addAll(lines);
+		}
+	}
+
+
+	/**
+	 * Take the difference between the file methods.
+	 * 
+	 * @param changedMethods
+	 * 			List<MethodDeclaration> with the changed methods.
+	 * @param originalMethods
+	 * 			List<MethodDeclaration> with the original methods.
+	 */
+	private void diffMethods(final List<MethodDeclaration> changedMethods, final List<MethodDeclaration> originalMethods) {
+
+		for (MethodDeclaration changedMethod : changedMethods) {
+			checkMethods(changedMethod, originalMethods);
+			checkStatement(changedMethod, originalMethods);
+		}
+	}
+	
+	/**
+	 * 
+	 * Find the change method signature into the original methods declaration and takes the difference.
+	 * 
+	 * @param changedMethod
+	 * 			<MethodDeclaration> with the method signature to be found into the original methods declaration.
+	 * @param originalMethods
+	 * 			List<MethodDeclaration> with the original methods declaration.
+	 * 
+	 * @return The original MethodDeclaration if exists, else return NULL.
+	 */
+	private MethodDeclaration findMethodInOriginalList(final MethodDeclaration changedMethod, final List<MethodDeclaration> originalMethods) {
+		for (MethodDeclaration originalMethod : originalMethods) {
+			String changedMethodSignature = generateAssignature(changedMethod);
+
+			String originalMethodSignature = generateAssignature(originalMethod);
+
+			if (changedMethodSignature.equals(originalMethodSignature)) {
+				return originalMethod;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param changedMethod
+	 * @param originalMethods
+	 */
+	private void checkStatement(final MethodDeclaration changedMethod, final List<MethodDeclaration> originalMethods) {
+		MethodDeclaration originalMethod = findMethodInOriginalList(changedMethod, originalMethods);
+		
+		if(originalMethod != null) {
+			boolean isDiff = isDiffMethods(changedMethod.getBody(), originalMethod.getBody());
+			if (isDiff) {
+				List<String> changedLines = new ArrayList<String>();
+				List<String> originalLines = new ArrayList<String>();
+				for (Statement changedStatement : changedMethod.getBody().getStmts()) {
+					changedLines.addAll(getAllLineStatementsMethod(changedStatement, changedMethod.getName()));
+				}
+				
+				for (Statement originalStatement : originalMethod.getBody().getStmts()) {
+					originalLines.addAll(getAllLineStatementsMethod(originalStatement, originalMethod.getName()));
+				}
+				statementDiff.addAll(changedLines);
+			}
+		} else {
+			List<String> lines = new ArrayList<String>();
+			for (Statement stt : changedMethod.getBody().getStmts()) {
+				lines.addAll(getAllLineStatementsMethod(stt, changedMethod.getName()));
+			}
+			statementDiff.addAll(lines);
+		}
+	}
+	
+//	private String deletionAnalysis(final List<String> changedLines, final List<String> originalLines) {
+//		// Pesquisar por possíveis inserções.
+//		
+//		if(changedLines.size() < originalLines.size()) {
+//			// If the first lines are different it's because in the new version the first line(s) were deleted.
+//			if(!changedLines.get(0).equals(originalLines.get(0))) {
+//				// get the next one to represent.
+//				return changedLines.get(0);
+//			} 
+//			// If the last ones are different it's because in the new version the last line(s) were deleted.
+//			else if(!changedLines.get(changedLines.size()).equals(
+//					originalLines.get(originalLines.size()))) {
+//				// get the previous one.
+//				return changedLines.get(changedLines.size());
+//			}
+//			// If because the change occurs in the middle.
+//			else {
+//				// Find the difference and return the nextOne.
+//				return null;
+//			}
+//		}
+//	}
+	
+	private void checkMethods(final MethodDeclaration changedMethod, final List<MethodDeclaration> originalMethods) {
+
+		boolean found = false;
+		for (MethodDeclaration originalMethod : originalMethods) {
+			String changedMethodSignature = generateAssignature(changedMethod);
+
+			String originalMethodSignature = generateAssignature(originalMethod);
+
+			if (changedMethodSignature.equals(originalMethodSignature)) {
+				found = true;
+				boolean isDiff = isDiffMethods(changedMethod.getBody(), originalMethod.getBody());
+				if (isDiff) {
+					List<String> lines = new ArrayList<String>();
+					for (Statement stt : changedMethod.getBody().getStmts()) {
+						lines.addAll(getAllLineStatementsMethod(stt, changedMethod.getName()));
+					}
+					blockDiff.addAll(lines);
+				}
+			}
+		}
+		if(!found){
+			List<String> lines = new ArrayList<String>();
+			for (Statement stt : changedMethod.getBody().getStmts()) {
+				lines.addAll(getAllLineStatementsMethod(stt, changedMethod.getName()));
+			}
+			blockDiff.addAll(lines);
+		}
+	}
+
+	private String generateAssignatureConstructor(ConstructorDeclaration constructor) {
+
+		String assignature = constructor.getName();;
+
+		List<Parameter> parametros = constructor.getParameters();
+
+		if (parametros != null) {
+
+			for (Parameter param : constructor.getParameters()) {
+				assignature += param.getType();
+			}
+		}
+
+		return assignature;
+	}
+
+	private String generateAssignature(MethodDeclaration method) {
+
+		String name = method.getName();
+
+		Type type = method.getType();
+		String assignature = type+name;
+
+		List<Parameter> parametros = method.getParameters();
+
+		if (parametros != null) {
+
+			for (Parameter param : method.getParameters()) {
+				assignature += param.getType();
+			}
+		}
+
+		return assignature;
+	}
+
+	/**
+	 * Format all statements into the PriorJ format work.
+	 * 
+	 * @param changedStatement
+	 * 			Statement changed.
+	 * @param methodSignature
+	 * 			Method signature.
+	 * @return List<String> with all method statements in the string format.
+	 */
+	private List<String> getAllLineStatementsMethod(final Statement changedStatement, String methodSignature) {
+
+		List<String> stmts = new ArrayList<String>();
+
+		if (changedStatement == null) {
+			return stmts;
+		}
+
+		if (changedStatement instanceof BlockStmt) {
+
+			BlockStmt bloco = (BlockStmt) changedStatement;
+
+			for (Statement st : bloco.getStmts()) {
+				stmts.addAll(getAllLineStatementsMethod(st, methodSignature));
+			}
+		} else if (changedStatement instanceof IfStmt) {
+
+			String line = getClassName() + Difference.DOT + methodSignature + Difference.PARENTHESES + Difference.DOT + changedStatement.getBeginLine();
+			stmts.add(line);
+
+			IfStmt ifSt = (IfStmt) changedStatement;
+
+			stmts.addAll(getAllLineStatementsMethod(ifSt.getThenStmt(),methodSignature));
+
+			stmts.addAll(getAllLineStatementsMethod(ifSt.getElseStmt(), methodSignature));
+		} else if (changedStatement instanceof ForStmt) {
+
+			String line = getClassName() + Difference.DOT + methodSignature + Difference.PARENTHESES + Difference.DOT + changedStatement.getBeginLine();
+			stmts.add(line);
+
+			ForStmt forSt = (ForStmt) changedStatement;
+
+			stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), methodSignature));
+		} else if (changedStatement instanceof ForeachStmt) {
+
+			String line = getClassName() + Difference.DOT + methodSignature + Difference.PARENTHESES + Difference.DOT + changedStatement.getBeginLine();
+			stmts.add(line);
+
+			ForeachStmt forSt = (ForeachStmt) changedStatement;
+
+			stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), methodSignature));
+		} else if (changedStatement instanceof WhileStmt) {
+
+			String line = getClassName() + Difference.DOT+methodSignature + Difference.PARENTHESES + Difference.DOT + changedStatement.getBeginLine();
+			stmts.add(line);
+
+			WhileStmt forSt = (WhileStmt) changedStatement;
+
+			stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), methodSignature));
+		} else if (changedStatement instanceof TryStmt) {
+			String line = getClassName() + Difference.DOT + methodSignature + Difference.PARENTHESES + Difference.DOT + changedStatement.getBeginLine();
+			stmts.add(line);
+
+			TryStmt trySt = (TryStmt) changedStatement;
+
+			stmts.addAll(getAllLineStatementsMethod(trySt.getTryBlock(), methodSignature));
+
+			stmts.addAll(getAllLineStatementsMethod(trySt.getFinallyBlock(), methodSignature));
+		} else {
+
+			String line = getClassName() + Difference.DOT + methodSignature + Difference.PARENTHESES + Difference.DOT + changedStatement.getBeginLine();
+
+			if (!changedStatement.toString().contains("watchPrior")) {
+				stmts.add(line);
+			}
+		}
+
+		return stmts;
+	}
+	
+	/**
+	 * Analyze if the constructor are different.
+	 * 
+	 * @param changedBlock
+	 * 			BlockStmt with the changed block.
+	 * @param originalBlock
+	 * 			BlockStmt with the old block.
+	 * 
+	 * @return true if it's different, else return false.
+	 */
+	private boolean isDiffConstructors(final BlockStmt changedBlock, final BlockStmt originalBlock) {
+		return isDiffMethods(changedBlock, originalBlock);
+	}
+
+	/**
+	 * Analyze if the methods are different.
+	 * 
+	 * @param changedBlock
+	 * 			BlockStmt with the changed block.
+	 * @param originalBlock
+	 * 			BlockStmt with the old block.
+	 * 
+	 * @return true if it's different, else return false.
+	 */
+	private boolean isDiffMethods(final BlockStmt changedBlock, final BlockStmt originalBlock) {
+
+		List<Statement> stChanged = null;
+
+		List<Statement> stOriginal = null;
+
+		if (changedBlock != null) {
+			stChanged = changedBlock.getStmts();
+		}
+
+		if (originalBlock != null) {
+			stOriginal = originalBlock.getStmts();
+		}
+
+		if (stChanged == stOriginal) {
+			return false;
+		}
+
+		// Changed or Original are null.
+		if (stChanged == null && stOriginal != null) {
+			return true;
+		}
+
+		if (stChanged != null && stOriginal == null) {
+			return true;
+		}
+
+		// Different size.
+		if (stChanged.size() != stOriginal.size()) {
+			return true;
+		}
+
+		// Any statement is different.
+		for (int i = 0; i < stChanged.size(); i++) {
+			if (!isEqualsStatement(stChanged.get(i), stOriginal.get(i))) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Analyze if the statements are different.
+	 * 
+	 * @param changedStatement
+	 * 			Statement changed.
+	 * @param originalStatement
+	 * 			Statement original.
+	 * @return true if it's equals, else return false;
+	 */
+	private boolean isEqualsStatement(final Statement changedStatement, final Statement originalStatement) {
+		return changedStatement.toString().equals(originalStatement.toString());
+	}
 
 }

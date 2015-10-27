@@ -56,17 +56,6 @@ public class Repository {
        this.controller = TestSuiteController.getInstance();
     }
 
-	public void init() {
-//		dir = JavaIO.USER_DIR+JavaIO.SEPARATOR+"report"+JavaIO.SEPARATOR;
-//		file = dir + "coveragePriorJ.xml";
-//
-//	   if(!JavaIO.exist(dir)){
-//		   JavaIO.createLocalFolder("report");
-//	   }
-//	   JavaIO.createXMLFile(dir, "coveragePriorJ.xml", "<list>", true);
-	   
-	}
-
     /**
      * Get the method that is currently running.
      * 
@@ -270,7 +259,21 @@ public class Repository {
     	getAtualSuite().addTestCase(getAtualTestCase());
         suites.add(getAtualSuite());
         try {
-			this.controller.save(suites);
+			this.controller.save(suites, "database");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    /**
+     * Method that performs recording data in the XML file.
+     */
+    public void commitOriginal() {
+    	getAtualSuite().addTestCase(getAtualTestCase());
+        suites.add(getAtualSuite());
+        try {
+			this.controller.save(suites, "database-original");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -279,9 +282,29 @@ public class Repository {
     
     public void finishCommit() {
     	try {
-			JavaIO.copyAll(new File("database"), new File("C:/PriorJ/workspace/priorj/com.splab.priorj.plugin/database"), true);
+    		//Delete all existing files before copy all new files.
+    		File[] allFiles = JavaIO.list("C:/PriorJ/workspace/priorj/com.splab.priorj.plugin/database");
+    		for (File file : allFiles) {
+    			JavaIO.deleteFile(file.getAbsolutePath());
+			}
+    		// Copy all new Files.
+    		JavaIO.copyAll(new File("database"), new File("C:/PriorJ/workspace/priorj/com.splab.priorj.plugin/database"), true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void finishCommitOriginal() {
+    	try {
+    		//Delete all existing files before copy all new files.
+    		File[] allFiles = JavaIO.list("C:/PriorJ/workspace/priorj/com.splab.priorj.plugin/database-original");
+    		for (File file : allFiles) {
+    			JavaIO.deleteFile(file.getAbsolutePath());
+			}
+    		// Copy all new Files.
+    		JavaIO.copyAll(new File("database-original"), new File("C:/PriorJ/workspace/priorj/com.splab.priorj.plugin/database-original"), true);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
     }

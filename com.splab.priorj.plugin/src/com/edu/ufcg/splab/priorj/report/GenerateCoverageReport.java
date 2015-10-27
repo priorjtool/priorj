@@ -106,13 +106,13 @@ public class GenerateCoverageReport {
           		builder.append("\t\tstatements : "+getCountUniqueStatementCoverage(testcase) + ",\n");
           		
           		builder.append("\t\tchangesCovered : [");
-          		List<String> changes = this.getTestCaseChangesCovered(testcase);
-          		for (String cc : changes) {
+//          		List<String> changes = this.getTestCaseChangesCovered(testcase);
+          		for (String cc : testcase.getStatementsCoverage()) {
           			builder.append("'" + cc + "'" + ",");
 				}
           		// Deleta a última vírgula.
-          		if(!changes.isEmpty()) {
-          			builder.deleteCharAt(builder.length()-1);
+          		if(!testcase.getStatementsCoverage().isEmpty()) {
+          			builder.deleteCharAt(builder.length() - 1);
           		}
           		builder.append("]");
           		builder.append("\n\t});\n");

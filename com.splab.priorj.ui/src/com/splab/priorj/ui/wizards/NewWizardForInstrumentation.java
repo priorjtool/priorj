@@ -24,6 +24,7 @@ import com.splab.priorj.ui.models.InstrumentationManager;
  */
 public class NewWizardForInstrumentation extends Wizard implements INewWizard {
 
+	private static final String ORIGINAL_PROJECT_TAG = "_Old";
 	private SelectionInstrumentationWizardPage instrumentationPage;
 	
 	public NewWizardForInstrumentation() {
@@ -96,9 +97,9 @@ public class NewWizardForInstrumentation extends Wizard implements INewWizard {
 					services.refreshProject(version);
 					
 					if (!oldProject.isEmpty()){
-						services.cloneProject(oldProject, version+"_Old");
-						services.refreshProject(version+"_Old");	
-						services.checkDiffs(version, version+"_Old");		
+						services.cloneProject(oldProject, version+ORIGINAL_PROJECT_TAG);
+						services.refreshProject(version+ORIGINAL_PROJECT_TAG);	
+						services.checkDiffs(version, version+ORIGINAL_PROJECT_TAG);		
 					}
 					toDo = false; 
 					if (monitor.isCanceled()) 

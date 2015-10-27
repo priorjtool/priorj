@@ -4,7 +4,9 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -38,6 +40,8 @@ import com.java.io.JavaIO;
  *
  */
 public class PriorJServices {
+	
+	private static final String ORIGINAL_PROJECT_TAG = "_Old";
 	
 	private static PriorJServices instance;
 	
@@ -132,7 +136,11 @@ public class PriorJServices {
 	 */
 	public void cloneProject(String selectedProjectName, String newProjectName) throws Exception{
 		DataManager.createFolderVersion(selectedProjectName, newProjectName);
-		ajdtHandler.copyProject(selectedProjectName, newProjectName);
+		if(newProjectName.endsWith(PriorJServices.ORIGINAL_PROJECT_TAG)) {
+			ajdtHandler.copyProject(selectedProjectName, newProjectName, true);
+		} else {
+			ajdtHandler.copyProject(selectedProjectName, newProjectName, false);
+		}
 	}
 	
 	/**
@@ -172,6 +180,35 @@ public class PriorJServices {
 		return DataManager.getLocalBasePath();
 	}
 	
+	public void insertDeletedChangesIntoAffectedBlocks() throws Exception {
+		Coverage coverage = new Coverage();
+		List<TestSuite> suitesOriginal = getSuitesOriginal();
+		List<TestCase> allTestsOriginal = coverage.getAllTests(suitesOriginal);
+		List<TestSuite> suites = getSuites();
+		List<TestCase> allTests = coverage.getAllTests(suites);
+		Map<String, List<String>> deletedCoverages = new HashMap<String, List<String>>(); 
+		for (TestCase tcChanged : allTests) {
+			for (TestCase tcOriginal : allTestsOriginal) {
+				if(tcChanged.getSignature().equals(tcOriginal.getSignature())) {
+					List<String> stsChanged = tcChanged.getStatementsCoverageDistinct();
+					List<String> stsOriginal = tcOriginal.getStatementsCoverageDistinct();
+					List<String> stsDeleted = new ArrayList<String>();
+					if(stsChanged.size() < stsOriginal.size()) {
+						for (String stOriginal : stsOriginal) {
+							if(!stsChanged.contains(stOriginal)) {
+								stsDeleted.add(stOriginal);
+								System.out.println(tcChanged.getSignature() + " - " + stOriginal);
+							}
+						}
+						deletedCoverages.put(tcChanged.getSignature(), stsDeleted);
+					}
+				}
+			}
+		}
+		priorj.setDeletedCoverages(deletedCoverages);
+		priorj.incrementAffectedBlocksWithDeletedStatements(allTests);
+	}
+	
 	/**
 	 * This method prioritize with many techniques simultaneously.
 	 * 
@@ -184,12 +221,8 @@ public class PriorJServices {
 	public void prioritizeAll(int size) throws Exception {
 		Coverage coverage = new Coverage();
 		List<TestSuite> suites = getSuites();
-		for (TestSuite s : suites) {
-			System.out.println(s);
-			s.teste();
-		}
-//		List<TestSuite> suites = getSuites();
 		List<TestCase> allTests = coverage.getAllTests(suites);
+		
 		String projectName = DataManager.getProjectFolderName();
 		String projPath = ajdtHandler.getFullProjectPath(projectName);
 
@@ -263,6 +296,18 @@ public class PriorJServices {
 	public List<TestSuite> getSuites() {
 		List<TestSuite> suites = null;
 		suites = this.controller.getAll();
+		return suites;
+	}
+	
+	/**
+	 * Retrieve a list of test suites from the original project.
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public List<TestSuite> getSuitesOriginal() {
+		List<TestSuite> suites = null;
+		suites = this.controller.getAllOriginal();
 		return suites;
 	}
 	
@@ -557,6 +602,11 @@ public class PriorJServices {
 
 	public void setFrameworkVersion(boolean defaultJUnitVersion3) {
 		priorj.setJUnitFrameworkVersion4(defaultJUnitVersion3);
+	}
+
+	public List<String> getAffectedBlocksWithDeletedStatements() {
+		// TODO Auto-generated method stub
+		return priorj.getAffectedBlocksWithDeletedStatements();
 	}
 	
 }

@@ -2,7 +2,9 @@ package com.edu.ufcg.splab.priorj.controller;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.edu.ufcg.splab.core.Difference;
 import com.edu.ufcg.splab.core.InstrumentClass;
@@ -26,6 +28,8 @@ public class PriorJ {
 	private static PriorJ instance;
 	private static List<Integer> techniques;
 	private static List<String> affectedBlocks;
+	private static List<String> affectedBlocksWithDeletedStatements;
+	private static Map<String, List<String>> deletedCoverages;
 	private static boolean junitFrameworkVersion4;
 	private String projPath;
 
@@ -33,6 +37,8 @@ public class PriorJ {
 		if (PriorJ.instance == null){
 			techniques = new ArrayList<Integer>();
 			affectedBlocks = new ArrayList<String>();
+			affectedBlocksWithDeletedStatements = new ArrayList<String>();
+			deletedCoverages = new HashMap<String, List<String>>();
 			PriorJ.instance = new PriorJ();
 			junitFrameworkVersion4 = false;
 		}
@@ -137,6 +143,20 @@ public class PriorJ {
 //	      return result.getRunCount();
 //	}
 	
+	public void incrementAffectedBlocksWithDeletedStatements(List<TestCase> allTests) {
+		affectedBlocksWithDeletedStatements.addAll(affectedBlocks);
+		for (TestCase testCase : allTests) {
+			List<String> stmts = deletedCoverages.get(testCase.getSignature());
+			if(stmts != null) {
+				for (String stmt : stmts) {
+					if(!affectedBlocksWithDeletedStatements.contains(stmt)) {
+						affectedBlocksWithDeletedStatements.add(stmt);
+					}
+				}
+			}
+		}
+	}
+	
 	/**
 	 * 
 	 * @param totalMethodCoverage
@@ -146,6 +166,7 @@ public class PriorJ {
 	 */
 	public List<String> prioritize(int typeOfTechnique, List<TestCase> allTests) throws EmptySetOfTestCaseException {
 		TechniqueCreator creator = new TechniqueCreator();
+		
 		if (typeOfTechnique == TechniqueCreator.CHANGED_BLOCKS){
 			TechniqueEchelonTotal technique = new TechniqueEchelonTotal();
 			technique.setBlockAffected(affectedBlocks);
@@ -153,7 +174,8 @@ public class PriorJ {
 
 		} else if (typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
 			TechniqueEchelonChanged technique = new TechniqueEchelonChanged();
-			technique.setAffectedBlocks(affectedBlocks);
+			technique.setAffectedBlocks(affectedBlocksWithDeletedStatements);
+			technique.setDeletedCoverages(deletedCoverages);
 			return technique.prioritize(allTests);
 		} else {
 			Technique technique = creator.create(typeOfTechnique);
@@ -170,7 +192,8 @@ public class PriorJ {
 
 		} else if (typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
 			TechniqueEchelonChanged technique = new TechniqueEchelonChanged();
-			technique.setAffectedBlocks(affectedBlocks);
+			technique.setAffectedBlocks(affectedBlocksWithDeletedStatements);
+			technique.setDeletedCoverages(deletedCoverages);
 			return technique.prioritize(allTests);
 		} else {
 			Technique technique = creator.create(typeOfTechnique);
@@ -224,7 +247,8 @@ public class PriorJ {
 					notWeightList = technique.notWeightList;
 				} else {
 					TechniqueEchelonChanged technique = new TechniqueEchelonChanged();
-					technique.setAffectedBlocks(affectedBlocks);
+					technique.setAffectedBlocks(affectedBlocksWithDeletedStatements);
+					technique.setDeletedCoverages(deletedCoverages);
 					technique.weightList = new ArrayList<String>();
 					technique.notWeightList = new ArrayList<String>();
 					technique.prioritize(allTests);
@@ -362,6 +386,10 @@ public class PriorJ {
 		return this.affectedBlocks;
 	}
 	
+	public List<String> getAffectedBlocksWithDeletedStatements() {
+		return this.affectedBlocksWithDeletedStatements;
+	}
+	
 	/**
 	 * This method instrument a class.
 	 * 
@@ -392,7 +420,7 @@ public class PriorJ {
 		System.out.println("Filepath = " + filePath);
 		System.out.println("OldFilepath = " + oldFilePath);
 		difference.diff();
-		List<String> affected = difference.getStatementsDiff();
+		List<String> affected = difference.getBlockDiff();
 		return affected;
 	}
 	
@@ -402,8 +430,12 @@ public class PriorJ {
 	 */
 	public void setAffectedBlocks(List<String> blocks) {
 		this.affectedBlocks = blocks;
-	}	
-
+	}
+	
+	public void setDeletedCoverages(Map<String, List<String>> deletedCoverages) {
+		this.deletedCoverages = deletedCoverages;
+	}
+	 
 	public static void main(String[] args) {
 		System.out.println("PriorJ version 1.0.6");
 	}
