@@ -43,8 +43,11 @@ import java.util.List;
 
 public class Difference {
 
-	private static final String DOT 			= ".";
-	private static final String PARENTHESES		= "()";
+	private static final String DOT 				= ".";
+	private static final String COMMA				= ",";
+	private static final String PARENTHESES			= "()";
+	private static final String PARENTHESES_OPEN	= "(";
+	private static final String PARENTHESES_CLOSED	= ")";
 	
 	private List<String> fieldDiff;
 	private List<String> blockDiff;
@@ -200,7 +203,7 @@ public class Difference {
 				if (isDiff) {
 					List<String> lines = new ArrayList<String>();
 					for (Statement stt : constructor.getBlock().getStmts()) {
-						lines.addAll(getAllLineStatementsMethod(stt, constructor.getName()));
+						lines.addAll(getAllLineStatementsMethod(stt, constructor));
 					}
 					blockDiff.addAll(lines);
 				}
@@ -209,7 +212,7 @@ public class Difference {
 		if(!encontrou){
 			List<String> lines = new ArrayList<String>();
 			for (Statement stt : constructor.getBlock().getStmts()) {
-				lines.addAll(getAllLineStatementsMethod(stt, constructor.getName()));
+				lines.addAll(getAllLineStatementsMethod(stt, constructor));
 			}
 			blockDiff.addAll(lines);
 		}
@@ -270,18 +273,18 @@ public class Difference {
 				List<String> changedLines = new ArrayList<String>();
 				List<String> originalLines = new ArrayList<String>();
 				for (Statement changedStatement : changedMethod.getBody().getStmts()) {
-					changedLines.addAll(getAllLineStatementsMethod(changedStatement, changedMethod.getName()));
+					changedLines.addAll(getAllLineStatementsMethod(changedStatement, changedMethod));
 				}
 				
 				for (Statement originalStatement : originalMethod.getBody().getStmts()) {
-					originalLines.addAll(getAllLineStatementsMethod(originalStatement, originalMethod.getName()));
+					originalLines.addAll(getAllLineStatementsMethod(originalStatement, originalMethod));
 				}
 				statementDiff.addAll(changedLines);
 			}
 		} else {
 			List<String> lines = new ArrayList<String>();
 			for (Statement stt : changedMethod.getBody().getStmts()) {
-				lines.addAll(getAllLineStatementsMethod(stt, changedMethod.getName()));
+				lines.addAll(getAllLineStatementsMethod(stt, changedMethod));
 			}
 			statementDiff.addAll(lines);
 		}
@@ -324,7 +327,7 @@ public class Difference {
 				if (isDiff) {
 					List<String> lines = new ArrayList<String>();
 					for (Statement stt : changedMethod.getBody().getStmts()) {
-						lines.addAll(getAllLineStatementsMethod(stt, changedMethod.getName()));
+						lines.addAll(getAllLineStatementsMethod(stt, changedMethod));
 					}
 					blockDiff.addAll(lines);
 				}
@@ -333,7 +336,7 @@ public class Difference {
 		if(!found){
 			List<String> lines = new ArrayList<String>();
 			for (Statement stt : changedMethod.getBody().getStmts()) {
-				lines.addAll(getAllLineStatementsMethod(stt, changedMethod.getName()));
+				lines.addAll(getAllLineStatementsMethod(stt, changedMethod));
 			}
 			blockDiff.addAll(lines);
 		}
@@ -383,8 +386,7 @@ public class Difference {
 	 * 			Method signature.
 	 * @return List<String> with all method statements in the string format.
 	 */
-	private List<String> getAllLineStatementsMethod(final Statement changedStatement, String methodSignature) {
-
+	private List<String> getAllLineStatementsMethod(final Statement changedStatement, final MethodDeclaration method) {
 		List<String> stmts = new ArrayList<String>();
 
 		if (changedStatement == null) {
@@ -394,56 +396,164 @@ public class Difference {
 		if (changedStatement instanceof BlockStmt) {
 
 			BlockStmt bloco = (BlockStmt) changedStatement;
-
+			
 			for (Statement st : bloco.getStmts()) {
-				stmts.addAll(getAllLineStatementsMethod(st, methodSignature));
+				stmts.addAll(getAllLineStatementsMethod(st, method));
 			}
 		} else if (changedStatement instanceof IfStmt) {
 
-			String line = getClassName() + Difference.DOT + methodSignature + Difference.PARENTHESES + Difference.DOT + changedStatement.getBeginLine();
+			String line = getClassName() + Difference.DOT + method.getName() + Difference.PARENTHESES_OPEN;
+			line += extractParameters(method);
+			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
+			System.out.println(line);
 			stmts.add(line);
 
 			IfStmt ifSt = (IfStmt) changedStatement;
 
-			stmts.addAll(getAllLineStatementsMethod(ifSt.getThenStmt(),methodSignature));
+			stmts.addAll(getAllLineStatementsMethod(ifSt.getThenStmt(),method));
 
-			stmts.addAll(getAllLineStatementsMethod(ifSt.getElseStmt(), methodSignature));
+			stmts.addAll(getAllLineStatementsMethod(ifSt.getElseStmt(), method));
 		} else if (changedStatement instanceof ForStmt) {
 
-			String line = getClassName() + Difference.DOT + methodSignature + Difference.PARENTHESES + Difference.DOT + changedStatement.getBeginLine();
+			String line = getClassName() + Difference.DOT + method.getName() + Difference.PARENTHESES_OPEN;
+			line += extractParameters(method);
+			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
+			System.out.println(line);
 			stmts.add(line);
 
 			ForStmt forSt = (ForStmt) changedStatement;
 
-			stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), methodSignature));
+			stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), method));
 		} else if (changedStatement instanceof ForeachStmt) {
 
-			String line = getClassName() + Difference.DOT + methodSignature + Difference.PARENTHESES + Difference.DOT + changedStatement.getBeginLine();
+			String line = getClassName() + Difference.DOT + method.getName() + Difference.PARENTHESES_OPEN;
+			line += extractParameters(method);
+			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
+			System.out.println(line);
 			stmts.add(line);
 
 			ForeachStmt forSt = (ForeachStmt) changedStatement;
 
-			stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), methodSignature));
+			stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), method));
 		} else if (changedStatement instanceof WhileStmt) {
 
-			String line = getClassName() + Difference.DOT+methodSignature + Difference.PARENTHESES + Difference.DOT + changedStatement.getBeginLine();
+			String line = getClassName() + Difference.DOT + method.getName() + Difference.PARENTHESES_OPEN;
+			line += extractParameters(method);
+			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
+			System.out.println(line);
 			stmts.add(line);
 
 			WhileStmt forSt = (WhileStmt) changedStatement;
 
-			stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), methodSignature));
+			stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), method));
 		} else if (changedStatement instanceof TryStmt) {
-			String line = getClassName() + Difference.DOT + methodSignature + Difference.PARENTHESES + Difference.DOT + changedStatement.getBeginLine();
+			String line = getClassName() + Difference.DOT + method.getName() + Difference.PARENTHESES_OPEN;
+			line += extractParameters(method);
+			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
+			System.out.println(line);
 			stmts.add(line);
 
 			TryStmt trySt = (TryStmt) changedStatement;
 
-			stmts.addAll(getAllLineStatementsMethod(trySt.getTryBlock(), methodSignature));
+			stmts.addAll(getAllLineStatementsMethod(trySt.getTryBlock(), method));
 
-			stmts.addAll(getAllLineStatementsMethod(trySt.getFinallyBlock(), methodSignature));
+			stmts.addAll(getAllLineStatementsMethod(trySt.getFinallyBlock(), method));
 		} else {
 
-			String line = getClassName() + Difference.DOT + methodSignature + Difference.PARENTHESES + Difference.DOT + changedStatement.getBeginLine();
+			String line = getClassName() + Difference.DOT + method.getName() + Difference.PARENTHESES_OPEN;
+			line += extractParameters(method);
+			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
+			System.out.println(line);
+			if (!changedStatement.toString().contains("watchPrior")) {
+				stmts.add(line);
+			}
+		}
+
+		return stmts;
+	}
+	
+	/**
+	 * Format all statements into the PriorJ format work.
+	 * 
+	 * @param changedStatement
+	 * 			Statement changed.
+	 * @param methodSignature
+	 * 			Method signature.
+	 * @return List<String> with all method statements in the string format.
+	 */
+	private List<String> getAllLineStatementsMethod(final Statement changedStatement, final ConstructorDeclaration constructor) {
+		List<String> stmts = new ArrayList<String>();
+
+		if (changedStatement == null) {
+			return stmts;
+		}
+
+		if (changedStatement instanceof BlockStmt) {
+
+			BlockStmt bloco = (BlockStmt) changedStatement;
+			
+			for (Statement st : bloco.getStmts()) {
+				stmts.addAll(getAllLineStatementsMethod(st, constructor));
+			}
+		} else if (changedStatement instanceof IfStmt) {
+
+			String line = getClassName() + Difference.DOT + constructor.getName() + Difference.PARENTHESES_OPEN;
+			line += extractParameters(constructor);
+			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
+			
+			stmts.add(line);
+
+			IfStmt ifSt = (IfStmt) changedStatement;
+
+			stmts.addAll(getAllLineStatementsMethod(ifSt.getThenStmt(),constructor));
+
+			stmts.addAll(getAllLineStatementsMethod(ifSt.getElseStmt(), constructor));
+		} else if (changedStatement instanceof ForStmt) {
+
+			String line = getClassName() + Difference.DOT + constructor.getName() + Difference.PARENTHESES_OPEN;
+			line += extractParameters(constructor);
+			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
+			stmts.add(line);
+
+			ForStmt forSt = (ForStmt) changedStatement;
+
+			stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), constructor));
+		} else if (changedStatement instanceof ForeachStmt) {
+
+			String line = getClassName() + Difference.DOT + constructor.getName() + Difference.PARENTHESES_OPEN;
+			line += extractParameters(constructor);
+			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
+			stmts.add(line);
+
+			ForeachStmt forSt = (ForeachStmt) changedStatement;
+
+			stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), constructor));
+		} else if (changedStatement instanceof WhileStmt) {
+
+			String line = getClassName() + Difference.DOT + constructor.getName() + Difference.PARENTHESES_OPEN;
+			line += extractParameters(constructor);
+			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
+			stmts.add(line);
+
+			WhileStmt forSt = (WhileStmt) changedStatement;
+
+			stmts.addAll(getAllLineStatementsMethod(forSt.getBody(), constructor));
+		} else if (changedStatement instanceof TryStmt) {
+			String line = getClassName() + Difference.DOT + constructor.getName() + Difference.PARENTHESES_OPEN;
+			line += extractParameters(constructor);
+			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
+			stmts.add(line);
+
+			TryStmt trySt = (TryStmt) changedStatement;
+
+			stmts.addAll(getAllLineStatementsMethod(trySt.getTryBlock(), constructor));
+
+			stmts.addAll(getAllLineStatementsMethod(trySt.getFinallyBlock(), constructor));
+		} else {
+
+			String line = getClassName() + Difference.DOT + constructor.getName() + Difference.PARENTHESES_OPEN;
+			line += extractParameters(constructor);
+			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
 
 			if (!changedStatement.toString().contains("watchPrior")) {
 				stmts.add(line);
@@ -451,6 +561,49 @@ public class Difference {
 		}
 
 		return stmts;
+	}
+	
+	/**
+	 * Extract the parameters from MethodDeclaration.
+	 * 
+	 * @param method 
+	 * 			MethodDeclaration to be extracted.
+	 * @return String with the parameters.
+	 */
+	private String extractParameters(final MethodDeclaration method) {
+		String extract = "";
+		List<Parameter> parameters = method.getParameters();
+		if(parameters == null) {
+			return "";
+		}
+		for (Parameter parameter : parameters) {
+			extract += parameter.getType() + Difference.COMMA;
+		}
+		// Excluindo a última vírgula.
+		if(extract.endsWith(Difference.COMMA)) {
+			extract = extract.substring(0, extract.length()-1);
+		}
+		return extract;
+	}
+	
+	/**
+	 * Extract the parameters from MethodDeclaration.
+	 * 
+	 * @param constructor 
+	 * 			MethodDeclaration to be extracted.
+	 * @return String with the parameters.
+	 */
+	private String extractParameters(final ConstructorDeclaration constructor) {
+		String extract = "";
+		List<Parameter> parameters = constructor.getParameters();
+		for (Parameter parameter : parameters) {
+			extract += parameter.getType() + Difference.COMMA;
+		}
+		// Excluindo a última vírgula.
+		if(extract.endsWith(Difference.COMMA)) {
+			extract = extract.substring(0, extract.length()-1);
+		}
+		return extract;
 	}
 	
 	/**
