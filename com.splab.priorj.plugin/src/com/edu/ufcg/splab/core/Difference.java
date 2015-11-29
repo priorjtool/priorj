@@ -37,6 +37,7 @@ import japa.parser.ast.type.Type;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -44,7 +45,7 @@ import java.util.List;
 public class Difference {
 
 	private static final String DOT 				= ".";
-	private static final String COMMA				= ",";
+	private static final String COMMA				= ", ";
 	private static final String PARENTHESES			= "()";
 	private static final String PARENTHESES_OPEN	= "(";
 	private static final String PARENTHESES_CLOSED	= ")";
@@ -279,6 +280,7 @@ public class Difference {
 				for (Statement originalStatement : originalMethod.getBody().getStmts()) {
 					originalLines.addAll(getAllLineStatementsMethod(originalStatement, originalMethod));
 				}
+				
 				statementDiff.addAll(changedLines);
 			}
 		} else {
@@ -289,29 +291,6 @@ public class Difference {
 			statementDiff.addAll(lines);
 		}
 	}
-	
-//	private String deletionAnalysis(final List<String> changedLines, final List<String> originalLines) {
-//		// Pesquisar por possíveis inserções.
-//		
-//		if(changedLines.size() < originalLines.size()) {
-//			// If the first lines are different it's because in the new version the first line(s) were deleted.
-//			if(!changedLines.get(0).equals(originalLines.get(0))) {
-//				// get the next one to represent.
-//				return changedLines.get(0);
-//			} 
-//			// If the last ones are different it's because in the new version the last line(s) were deleted.
-//			else if(!changedLines.get(changedLines.size()).equals(
-//					originalLines.get(originalLines.size()))) {
-//				// get the previous one.
-//				return changedLines.get(changedLines.size());
-//			}
-//			// If because the change occurs in the middle.
-//			else {
-//				// Find the difference and return the nextOne.
-//				return null;
-//			}
-//		}
-//	}
 	
 	private void checkMethods(final MethodDeclaration changedMethod, final List<MethodDeclaration> originalMethods) {
 
@@ -324,11 +303,13 @@ public class Difference {
 			if (changedMethodSignature.equals(originalMethodSignature)) {
 				found = true;
 				boolean isDiff = isDiffMethods(changedMethod.getBody(), originalMethod.getBody());
+				System.out.println("Is Diff = " + isDiff);
 				if (isDiff) {
 					List<String> lines = new ArrayList<String>();
 					for (Statement stt : changedMethod.getBody().getStmts()) {
 						lines.addAll(getAllLineStatementsMethod(stt, changedMethod));
 					}
+					
 					blockDiff.addAll(lines);
 				}
 			}
@@ -405,7 +386,6 @@ public class Difference {
 			String line = getClassName() + Difference.DOT + method.getName() + Difference.PARENTHESES_OPEN;
 			line += extractParameters(method);
 			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
-			System.out.println(line);
 			stmts.add(line);
 
 			IfStmt ifSt = (IfStmt) changedStatement;
@@ -418,7 +398,6 @@ public class Difference {
 			String line = getClassName() + Difference.DOT + method.getName() + Difference.PARENTHESES_OPEN;
 			line += extractParameters(method);
 			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
-			System.out.println(line);
 			stmts.add(line);
 
 			ForStmt forSt = (ForStmt) changedStatement;
@@ -429,7 +408,6 @@ public class Difference {
 			String line = getClassName() + Difference.DOT + method.getName() + Difference.PARENTHESES_OPEN;
 			line += extractParameters(method);
 			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
-			System.out.println(line);
 			stmts.add(line);
 
 			ForeachStmt forSt = (ForeachStmt) changedStatement;
@@ -440,7 +418,6 @@ public class Difference {
 			String line = getClassName() + Difference.DOT + method.getName() + Difference.PARENTHESES_OPEN;
 			line += extractParameters(method);
 			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
-			System.out.println(line);
 			stmts.add(line);
 
 			WhileStmt forSt = (WhileStmt) changedStatement;
@@ -450,7 +427,6 @@ public class Difference {
 			String line = getClassName() + Difference.DOT + method.getName() + Difference.PARENTHESES_OPEN;
 			line += extractParameters(method);
 			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
-			System.out.println(line);
 			stmts.add(line);
 
 			TryStmt trySt = (TryStmt) changedStatement;
@@ -463,7 +439,6 @@ public class Difference {
 			String line = getClassName() + Difference.DOT + method.getName() + Difference.PARENTHESES_OPEN;
 			line += extractParameters(method);
 			line += Difference.PARENTHESES_CLOSED + Difference.DOT + changedStatement.getBeginLine();
-			System.out.println(line);
 			if (!changedStatement.toString().contains("watchPrior")) {
 				stmts.add(line);
 			}
@@ -576,12 +551,15 @@ public class Difference {
 		if(parameters == null) {
 			return "";
 		}
-		for (Parameter parameter : parameters) {
-			extract += parameter.getType() + Difference.COMMA;
-		}
-		// Excluindo a última vírgula.
-		if(extract.endsWith(Difference.COMMA)) {
-			extract = extract.substring(0, extract.length()-1);
+		
+		Iterator<Parameter> it = parameters.iterator();
+		while (it.hasNext()) {
+			Parameter parameter = it.next();
+			if(it.hasNext()) {
+				extract += parameter.getType() + Difference.COMMA;
+			} else {
+				extract += parameter.getType();
+			}
 		}
 		return extract;
 	}
@@ -596,12 +574,18 @@ public class Difference {
 	private String extractParameters(final ConstructorDeclaration constructor) {
 		String extract = "";
 		List<Parameter> parameters = constructor.getParameters();
-		for (Parameter parameter : parameters) {
-			extract += parameter.getType() + Difference.COMMA;
+		if(parameters == null) {
+			return "";
 		}
-		// Excluindo a última vírgula.
-		if(extract.endsWith(Difference.COMMA)) {
-			extract = extract.substring(0, extract.length()-1);
+		
+		Iterator<Parameter> it = parameters.iterator();
+		while (it.hasNext()) {
+			Parameter parameter = it.next();
+			if(it.hasNext()) {
+				extract += parameter.getType() + Difference.COMMA;
+			} else {
+				extract += parameter.getType();
+			}
 		}
 		return extract;
 	}
