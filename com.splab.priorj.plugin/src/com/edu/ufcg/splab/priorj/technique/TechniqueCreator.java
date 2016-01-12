@@ -14,7 +14,8 @@ public class TechniqueCreator {
 	public static final int ADDITIONAL_STATEMENT_COVERAGE = 3;
 	public static final int RANDOM = 4;
 	public static final int CHANGED_BLOCKS = 5;
-	public static final int ECHELON_CHANGED = 6;
+	public static final int PROPOSAL_STATEMENT_TOTAL = 6;
+	public static final int PROPOSAL_STATEMENT_ADDITIONAL = 7;
 	
 	/**
 	 * Create a instance of a technique type.
@@ -41,8 +42,11 @@ public class TechniqueCreator {
 		else if (typeOfTechnique == TechniqueCreator.CHANGED_BLOCKS){
 			return new TechniqueEchelonTotal();
 		}
-		else if (typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
-			return new TechniqueEchelonChanged();
+		else if (typeOfTechnique == TechniqueCreator.PROPOSAL_STATEMENT_TOTAL){
+			return new TechniqueProposalStatementTotal();
+		}
+		else if (typeOfTechnique == TechniqueCreator.PROPOSAL_STATEMENT_ADDITIONAL){
+			return new TechniqueProposalStatementAdditional();
 		}
 		else{
 			throw new IllegalArgumentException("Type of Technique Invalid.");
@@ -74,8 +78,11 @@ public class TechniqueCreator {
 		else if (typeOfTechnique == TechniqueCreator.RANDOM){
 			return "RND";
 		}
-		else if (typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
-			return "EC";
+		else if (typeOfTechnique == TechniqueCreator.PROPOSAL_STATEMENT_TOTAL){
+			return "PST";
+		}
+		else if (typeOfTechnique == TechniqueCreator.PROPOSAL_STATEMENT_ADDITIONAL){
+			return "PSA";
 		}
 		else{
 			throw new IllegalArgumentException("Type of Technique Invalid.");

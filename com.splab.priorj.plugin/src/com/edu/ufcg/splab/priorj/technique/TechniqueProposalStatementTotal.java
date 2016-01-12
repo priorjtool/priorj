@@ -34,7 +34,7 @@ import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
  * @version 1.1
  *
  */
-public class TechniqueEchelonChanged extends ModificationTechnique implements Technique {
+public class TechniqueProposalStatementTotal extends ModificationTechnique implements Technique {
 	
 	private List<String> affectedBlocks;
 	
@@ -98,7 +98,7 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
      * @param copyList
      * 				The testcase list to be analized.
      */
-    private void calulateWeight(List<TestCaseEchelon> weightedList, List<TestCase> notWeightedList,
+    private void calulateWeight(List<TestCaseProposal> weightedList, List<TestCase> notWeightedList,
     		final List<TestCase> copyList) {
     	for (TestCase testCase : copyList) {
         	List<String> weight = testCase.getStatementsCoverage();
@@ -108,7 +108,7 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
         	}
     		List<String> statementCoverage = getWeight(weight);
         	if (statementCoverage.size() != 0.0) {
-        		weightedList.add(new TestCaseEchelon(getPercentage(statementCoverage.size()),
+        		weightedList.add(new TestCaseProposal(getPercentage(statementCoverage.size()),
         				testCase, statementCoverage));
         	}
         	else {
@@ -125,9 +125,9 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
      * 
      * @return List<StatementEchelonChanged>.
      */
-    private List<StatementEchelonChanged> createStatementEchelonList(
-    		final List<TestCaseEchelon> weightedList) {
-    	List<StatementEchelonChanged> statements = new ArrayList<StatementEchelonChanged>();
+    private List<StatementProposal> createStatementEchelonList(
+    		final List<TestCaseProposal> weightedList) {
+    	List<StatementProposal> statements = new ArrayList<StatementProposal>();
     	
     	// Itera sobre todos os blocos afetados.
     	for (String block : affectedBlocks) {
@@ -136,12 +136,12 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
 			 *  Itera sobre todos os casos de teste a fim de buscar os casos de teste
 			 *  que cobrem esse bloco afetado.
 			 */
-    		for (TestCaseEchelon testCase : weightedList) {
+    		for (TestCaseProposal testCase : weightedList) {
 				if (testCase.getStatementCoverage().contains(block)) {
 					testCases.add(testCase.getTestCase());
 				}
 			}
-    		StatementEchelonChanged st = new StatementEchelonChanged(block, testCases);
+    		StatementProposal st = new StatementProposal(block, testCases);
     		statements.add(st);
     		System.out.println(st);
     	}
@@ -155,14 +155,18 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
      * @param weightedList
      * 				The weighted list.
      */
-    private void calculateScore(final List<TestCaseEchelon> weightedList) {
+    private void calculateScore(final List<TestCaseProposal> weightedList) {
 //    	List<StatementEchelonChanged> statementsChanged = createStatementEchelonList(weightedList);
     	List<String> controlList = new ArrayList<String>();
-    	double incFactor = 1.0 / (double) this.affectedBlocks.size();
-    	double decFactor = 1.0 / (2.0 * this.affectedBlocks.size());
+    	// Incremento estático.
+//    	double incFactor = 1.0 / (double) this.affectedBlocks.size();
+//    	double decFactor = 1.0 / (2.0 * this.affectedBlocks.size());
     	
-    	for (TestCaseEchelon testCaseEchelon : weightedList) {
+    	for (TestCaseProposal testCaseEchelon : weightedList) {
     		double score = testCaseEchelon.getWeight();
+    		// Incremento dinâmico.
+    		double incFactor = 1.0 / (double) testCaseEchelon.getStatementCoverage().size();
+        	double decFactor = 1.0 / (2.0 * testCaseEchelon.getStatementCoverage().size());
     		
     		// Primeiro elemento é quem dita a lista de controle.
     		if(weightedList.get(0).equals(testCaseEchelon)) {
@@ -177,6 +181,7 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
     				score -= decFactor;
     			} else {
     				score += incFactor;
+    				controlList.add(change);
     			}
     		}
     		
@@ -192,9 +197,9 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
      * 
      * @return List<String> with the signatureList.
      */
-    private List<String> getSignatureWeightedList(final List<TestCaseEchelon> weightedList) {
+    private List<String> getSignatureWeightedList(final List<TestCaseProposal> weightedList) {
     	List<String> suiteList = new ArrayList<String>();
-    	for (TestCaseEchelon testCaseEchelon : weightedList) {
+    	for (TestCaseProposal testCaseEchelon : weightedList) {
     		String tcSig = testCaseEchelon.getTestCase().getSignature();
 			suiteList.add(tcSig);
 		}
@@ -221,16 +226,15 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
 	@Override
 	public List<String> prioritize(List<TestCase> tests)throws EmptySetOfTestCaseException {
 		List<TestCase> copyList = new ArrayList<TestCase>(tests);
-        ArrayList<TestCaseEchelon> weightedList = new ArrayList<TestCaseEchelon>();
-        ArrayList<TestCaseEchelon> scoredList = new ArrayList<TestCaseEchelon>();
+        ArrayList<TestCaseProposal> weightedList = new ArrayList<TestCaseProposal>();
+        ArrayList<TestCaseProposal> scoredList = new ArrayList<TestCaseProposal>();
         ArrayList<TestCase> notWeightedList = new ArrayList<TestCase>();
-        
+        System.out.println("Technique Proposal Statement Total");
         calulateWeight(weightedList, notWeightedList, copyList);
         
         Collections.sort(weightedList, new EchelonComparator(EchelonComparator.BY_WEIGHT));
         Collections.reverse(weightedList);
-        System.out.println("Weighted:");
-        for (TestCaseEchelon testCase : weightedList) {
+        for (TestCaseProposal testCase : weightedList) {
 			scoredList.add(testCase);
 		}
         
@@ -240,7 +244,7 @@ public class TechniqueEchelonChanged extends ModificationTechnique implements Te
         Collections.reverse(weightedList);
         System.out.println("By Score:");
         int i = 0;
-        for (TestCaseEchelon testCaseEchelon : weightedList) {
+        for (TestCaseProposal testCaseEchelon : weightedList) {
 			System.out.println("[" + i +"] " + testCaseEchelon.getTestCase() 
 					+ " [S - " +testCaseEchelon.getScore() 
 					+ " | W - " + testCaseEchelon.getWeight() + "]"

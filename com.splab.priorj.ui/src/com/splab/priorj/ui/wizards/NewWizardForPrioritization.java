@@ -111,8 +111,9 @@ public class NewWizardForPrioritization extends Wizard implements INewWizard {
 				services.setLocalBasePath(basepath);
 				services.createCurrentProjectVersion(item.getProjectName(), item.getVersionName());
 
-				for (Integer technique : item.getTechniques())
+				for (Integer technique : item.getTechniques()) {
 					services.addTechnique(technique);
+				}
 
 				while (toDo) {
 					if (monitor.isCanceled())

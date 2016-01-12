@@ -52,28 +52,31 @@ public class PriorJ {
 	 * @param typeOfTechnique
 	 */
 	public void addTechnique(int typeOfTechnique) {
-		if (typeOfTechnique == TechniqueCreator.ADDITIONAL_METHOD_COVERAGE){
+		if (typeOfTechnique == TechniqueCreator.ADDITIONAL_METHOD_COVERAGE) {
 //			techniques.add(TechniqueCreator.ADDITIONAL_METHOD_COVERAGE);
 		}
-		else if(typeOfTechnique == TechniqueCreator.ADDITIONAL_STATEMENT_COVERAGE){
+		else if(typeOfTechnique == TechniqueCreator.ADDITIONAL_STATEMENT_COVERAGE) {
 //			techniques.add(TechniqueCreator.ADDITIONAL_STATEMENT_COVERAGE);
 		}
-		else if (typeOfTechnique == TechniqueCreator.CHANGED_BLOCKS){
+		else if (typeOfTechnique == TechniqueCreator.CHANGED_BLOCKS) {
 			techniques.add(TechniqueCreator.CHANGED_BLOCKS);
 		}
-		else if (typeOfTechnique == TechniqueCreator.RANDOM){
+		else if (typeOfTechnique == TechniqueCreator.RANDOM) {
 			techniques.add(TechniqueCreator.RANDOM);
 		}
-		else if (typeOfTechnique == TechniqueCreator.TOTAL_METHOD_COVERAGE){
+		else if (typeOfTechnique == TechniqueCreator.TOTAL_METHOD_COVERAGE) {
 //			techniques.add(TechniqueCreator.TOTAL_METHOD_COVERAGE);
 		}
-		else if (typeOfTechnique == TechniqueCreator.TOTAL_STATEMENT_COVERAGE){
+		else if (typeOfTechnique == TechniqueCreator.TOTAL_STATEMENT_COVERAGE) {
 //			techniques.add(TechniqueCreator.TOTAL_STATEMENT_COVERAGE);
 		}
-		else if (typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
-			techniques.add(TechniqueCreator.ECHELON_CHANGED);
+		else if (typeOfTechnique == TechniqueCreator.PROPOSAL_STATEMENT_TOTAL) {
+			techniques.add(TechniqueCreator.PROPOSAL_STATEMENT_TOTAL);
 		}
-		else{
+		else if (typeOfTechnique == TechniqueCreator.PROPOSAL_STATEMENT_ADDITIONAL) {
+			techniques.add(TechniqueCreator.PROPOSAL_STATEMENT_ADDITIONAL);
+		}
+		else {
 			throw new IllegalArgumentException("Invalid Technique Type!");
 		}
 	}
@@ -167,17 +170,24 @@ public class PriorJ {
 	public List<String> prioritize(int typeOfTechnique, List<TestCase> allTests) throws EmptySetOfTestCaseException {
 		TechniqueCreator creator = new TechniqueCreator();
 		
-		if (typeOfTechnique == TechniqueCreator.CHANGED_BLOCKS){
-			TechniqueEchelonTotal technique = new TechniqueEchelonTotal();
+		if (typeOfTechnique == TechniqueCreator.CHANGED_BLOCKS) {
+			TechniqueEchelonTotal technique = (TechniqueEchelonTotal) creator.create(TechniqueCreator.CHANGED_BLOCKS);
 			technique.setBlockAffected(affectedBlocks);
 			return technique.prioritize(allTests);
-
-		} else if (typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
-			TechniqueEchelonChanged technique = new TechniqueEchelonChanged();
+		} 
+		else if (typeOfTechnique == TechniqueCreator.PROPOSAL_STATEMENT_TOTAL) {
+			TechniqueProposalStatementTotal technique = (TechniqueProposalStatementTotal) creator.create(TechniqueCreator.PROPOSAL_STATEMENT_TOTAL);
 			technique.setAffectedBlocks(affectedBlocksWithDeletedStatements);
 			technique.setDeletedCoverages(deletedCoverages);
 			return technique.prioritize(allTests);
-		} else {
+		} 
+		else if (typeOfTechnique == TechniqueCreator.PROPOSAL_STATEMENT_ADDITIONAL) {
+			TechniqueProposalStatementAdditional technique = (TechniqueProposalStatementAdditional) creator.create(TechniqueCreator.PROPOSAL_STATEMENT_ADDITIONAL);
+			technique.setAffectedBlocks(affectedBlocksWithDeletedStatements);
+			technique.setDeletedCoverages(deletedCoverages);
+			return technique.prioritize(allTests);
+		} 
+		else {
 			Technique technique = creator.create(typeOfTechnique);
 			return technique.prioritize(allTests);
 		}
@@ -185,17 +195,24 @@ public class PriorJ {
 
 	public List<String> prioritizeExp(int typeOfTechnique, List<TestCase> allTests) throws EmptySetOfTestCaseException {
 		TechniqueCreator creator = new TechniqueCreator();
-		if (typeOfTechnique == TechniqueCreator.CHANGED_BLOCKS){
+		if (typeOfTechnique == TechniqueCreator.CHANGED_BLOCKS) {
 			TechniqueEchelonTotal technique = new TechniqueEchelonTotal();
 			technique.setBlockAffected(affectedBlocks);
 			return technique.prioritize(allTests);
-
-		} else if (typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
-			TechniqueEchelonChanged technique = new TechniqueEchelonChanged();
+		}
+		else if (typeOfTechnique == TechniqueCreator.PROPOSAL_STATEMENT_TOTAL) {
+			TechniqueProposalStatementTotal technique = new TechniqueProposalStatementTotal();
 			technique.setAffectedBlocks(affectedBlocksWithDeletedStatements);
 			technique.setDeletedCoverages(deletedCoverages);
 			return technique.prioritize(allTests);
-		} else {
+		}
+		else if (typeOfTechnique == TechniqueCreator.PROPOSAL_STATEMENT_ADDITIONAL) {
+			TechniqueProposalStatementAdditional technique = new TechniqueProposalStatementAdditional();
+			technique.setAffectedBlocks(affectedBlocksWithDeletedStatements);
+			technique.setDeletedCoverages(deletedCoverages);
+			return technique.prioritize(allTests);
+		}
+		else {
 			Technique technique = creator.create(typeOfTechnique);
 			return technique.prioritize(allTests);
 		}
@@ -211,9 +228,9 @@ public class PriorJ {
 	 * @return
 	 * @throws Exception 
 	 */
-	public List<String> prioritizeAll(int suiteSize, List<TestCase> allTests) throws Exception{
+	public List<String> prioritizeAll(int suiteSize, List<TestCase> allTests) throws Exception {
 		List<String> prioritizedList = new ArrayList<String>();
-		for (Integer typeOfTechnique : techniques){
+		for (Integer typeOfTechnique : techniques) {
 			//getting the suite names
 			String acronyms = TechniqueCreator.acronyms(typeOfTechnique);
 			//prioritize the tests.
@@ -224,9 +241,9 @@ public class PriorJ {
 		return prioritizedList;
 	}
 
-	public List<String> prioritizeAllExp(int suiteSize, List<TestCase> allTests) throws Exception{
+	public List<String> prioritizeAllExp(int suiteSize, List<TestCase> allTests) throws Exception {
 		List<String> prioritizedList = new ArrayList<String>();
-		for (Integer typeOfTechnique : techniques){
+		for (Integer typeOfTechnique : techniques) {
 			//getting the suite names
 			String acronyms = TechniqueCreator.acronyms(typeOfTechnique);
 			//prioritize the tests.
@@ -236,8 +253,9 @@ public class PriorJ {
 			List<String> weightList;
 			List<String> notWeightList;
 			if (typeOfTechnique == TechniqueCreator.CHANGED_BLOCKS || 
-					typeOfTechnique == TechniqueCreator.ECHELON_CHANGED){
-				if (typeOfTechnique == TechniqueCreator.CHANGED_BLOCKS ){
+					typeOfTechnique == TechniqueCreator.PROPOSAL_STATEMENT_TOTAL || 
+					typeOfTechnique == TechniqueCreator.PROPOSAL_STATEMENT_ADDITIONAL) {
+				if (typeOfTechnique == TechniqueCreator.CHANGED_BLOCKS ) {
 					TechniqueEchelonTotal technique = new TechniqueEchelonTotal();
 					technique.setBlockAffected(affectedBlocks);
 					technique.weightList = new ArrayList<String>();
@@ -245,8 +263,17 @@ public class PriorJ {
 					technique.prioritize(allTests);
 					weightList = technique.weightList;
 					notWeightList = technique.notWeightList;
+				} else if (typeOfTechnique == TechniqueCreator.PROPOSAL_STATEMENT_TOTAL) {
+					TechniqueProposalStatementTotal technique = new TechniqueProposalStatementTotal();
+					technique.setAffectedBlocks(affectedBlocksWithDeletedStatements);
+					technique.setDeletedCoverages(deletedCoverages);
+					technique.weightList = new ArrayList<String>();
+					technique.notWeightList = new ArrayList<String>();
+					technique.prioritize(allTests);
+					weightList = technique.weightList;
+					notWeightList = technique.notWeightList;
 				} else {
-					TechniqueEchelonChanged technique = new TechniqueEchelonChanged();
+					TechniqueProposalStatementAdditional technique = new TechniqueProposalStatementAdditional();
 					technique.setAffectedBlocks(affectedBlocksWithDeletedStatements);
 					technique.setDeletedCoverages(deletedCoverages);
 					technique.weightList = new ArrayList<String>();
@@ -264,7 +291,7 @@ public class PriorJ {
 					creatPriorArtifact(prioritizedList, typeOfTechnique, acronyms+"_"+i);
 				}
 			}
-			else{
+			else {
 				Technique technique = creator.create(typeOfTechnique);
 				for (int i = 1; i < 41; i++) {
 					prioritizedList = new ArrayList<String>();
@@ -308,7 +335,7 @@ public class PriorJ {
 	 * 
 	 */
 	public void prioritizeAll(List<TestCase> allTests) throws Exception {
-		for (Integer typeOfTechnique : techniques){
+		for (Integer typeOfTechnique : techniques) {
 			//getting the suite names
 			String acronyms = TechniqueCreator.acronyms(typeOfTechnique);
 			//prioritize the tests.
@@ -347,7 +374,7 @@ public class PriorJ {
 	 * 		true if the Framework version is 4.x
 	 * 		if the Framework version is 3.x set false;
 	 */
-	public void setJUnitFrameworkVersion4(boolean option){
+	public void setJUnitFrameworkVersion4(boolean option) {
 		junitFrameworkVersion4 = true;
 	}
 	/**

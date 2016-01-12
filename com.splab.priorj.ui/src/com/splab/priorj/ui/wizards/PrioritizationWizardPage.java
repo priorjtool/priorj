@@ -64,7 +64,10 @@ public class PrioritizationWizardPage extends WizardPage {
 	private Button btnCbASC;
 	private Button btnCbRND;
 	private Button btnCbCB;
-	private Button btnCbRBA;
+	private Button btnCbPST;
+	private Button btnCbPSA;
+	private Button btnCbPMT;
+	private Button btnCbPMA;
 	private Button btnJUnit3;
 	private Button btnJUnit4;
 	private Button btnSelectDir;
@@ -216,14 +219,18 @@ public class PrioritizationWizardPage extends WizardPage {
 		createButtonTSC();
 		createButtonRND();
 		createButtonCB();
-		createButtonRBA();
+		createButtonPST();
+		createButtonPSA();
+//		createButtonPMT();
+//		createButtonPMA();
 	}
 	
 	private void createButtonCB() {
 		btnCbCB = new Button(groupCheckboxes, SWT.CHECK);
 		btnCbCB.setText("Changed Blocks (CB)");
+		added.add("CB");
 		// Retirar essa linhas
-		btnCbCB.setSelection(true);
+//		btnCbCB.setSelection(true);
 		btnCbCB.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e){
 				if (e.getSource() == btnCbCB ){
@@ -238,20 +245,20 @@ public class PrioritizationWizardPage extends WizardPage {
 		});
 	}
 	
-	private void createButtonRBA() {
-		btnCbRBA = new Button(groupCheckboxes, SWT.CHECK);
-		btnCbRBA.setText("Echelon Changed");
+	private void createButtonPST() {
+		btnCbPST = new Button(groupCheckboxes, SWT.CHECK);
+		btnCbPST.setText("Proposal Statement Total (PST)");
 		// Retirar essa linhas
-		btnCbRBA.setSelection(true);
-		
-		btnCbRBA.addSelectionListener(new SelectionAdapter() {
+		added.add("PST");
+//		btnCbPST.setSelection(true);
+		btnCbPST.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e){
-				if (e.getSource() == btnCbRBA ){
-					if (btnCbRBA.getSelection() == true){
-						added.add("RBA");
+				if (e.getSource() == btnCbPST ){
+					if (btnCbPST.getSelection() == true){
+						added.add("PST");
 					}
 					else{
-						added.remove("RBA");
+						added.remove("PST");
 					}
 				}
 			}
@@ -344,14 +351,72 @@ public class PrioritizationWizardPage extends WizardPage {
 			}
 		});
 	}
+	
+	private void createButtonPSA() {
+		btnCbPSA = new Button(groupCheckboxes, SWT.CHECK);
+		btnCbPSA.setText("Proposal Statement Additional (PSA)");
+		added.add("PSA");
+//		btnCbPSA.setSelection(true);
+		btnCbPSA.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e){
+
+				if (e.getSource() == btnCbPSA ){
+					if(btnCbPSA.getSelection() == true){
+						added.add("PSA");
+					}
+					else{
+						added.remove("PSA");
+					}
+				}
+			}
+		});
+	}
+	
+	private void createButtonPMT() {
+		btnCbPMT = new Button(groupCheckboxes, SWT.CHECK);
+		btnCbPMT.setText("Proposal Method Total (PMT)");
+		added.add("PMT");
+//		btnCbPMT.setSelection(true);
+		btnCbPMT.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e){
+
+				if (e.getSource() == btnCbPMT ){
+					if(btnCbPMT.getSelection() == true){
+						added.add("PMT");
+					}
+					else{
+						added.remove("PMT");
+					}
+				}
+			}
+		});
+	}
+	
+	private void createButtonPMA() {
+		btnCbPMA = new Button(groupCheckboxes, SWT.CHECK);
+		btnCbPMA.setText("Proposal Method Additional (PMA)");
+		added.add("PMA");
+//		btnCbPMA.setSelection(true);
+		btnCbPMA.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e){
+
+				if (e.getSource() == btnCbPMA ){
+					if(btnCbPMA.getSelection() == true){
+						added.add("PMA");
+					}
+					else{
+						added.remove("PSMA");
+					}
+				}
+			}
+		});
+	}
 
 	private void createButtonAMC() {
 		btnCbAMC = new Button(groupCheckboxes, SWT.CHECK);
 		btnCbAMC.setText("Additional Method Coverage (AMC)");
-
 		added.add("AMC");
 //		btnCbAMC.setSelection(true);
-
 		btnCbAMC.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e){
 				if (e.getSource() == btnCbAMC ){
@@ -369,7 +434,7 @@ public class PrioritizationWizardPage extends WizardPage {
 	private void createButtonJUnit3() {
 		btnJUnit3 = new Button(groupSettings, SWT.CHECK);
 		btnJUnit3.setText("Suite for JUnit 3.x");
-		btnJUnit3.setSelection(true);
+//		btnJUnit3.setSelection(true);
 		btnJUnit3.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e){
 				if (e.getSource() == btnJUnit3 ){
@@ -388,6 +453,7 @@ public class PrioritizationWizardPage extends WizardPage {
 	private void createButtonJUnit4() {
 		btnJUnit4 = new Button(groupSettings, SWT.CHECK);
 		btnJUnit4.setText("Suite for JUnit 4.x");
+		btnJUnit4.setSelection(true);
 		btnJUnit4.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e){
 				if (e.getSource() == btnJUnit4 ){
@@ -407,7 +473,7 @@ public class PrioritizationWizardPage extends WizardPage {
 		suiteSizeLabel = new Label(groupSelection, SWT.NONE);
 		suiteSizeLabel.setText("New suite size");
 		spinner = new Spinner(groupSelection, SWT.NONE);
-		spinner.setMinimum(10);
+		spinner.setMinimum(100);
 		spinner.setIncrement(10);
 		spinner.setMaximum(100);
 
@@ -477,9 +543,12 @@ public class PrioritizationWizardPage extends WizardPage {
 			if (technique.equals("TSC"));
 				if (!techniques.contains(TechniqueType.TSC))
 					techniques.add(TechniqueType.TSC);
-			if (technique.equals("RBA"));
-				if (!techniques.contains(TechniqueType.RBA))
-					techniques.add(TechniqueType.RBA);		
+			if (technique.equals("PST"));
+				if (!techniques.contains(TechniqueType.PST))
+					techniques.add(TechniqueType.PST);		
+			if (technique.equals("PSA"));
+				if (!techniques.contains(TechniqueType.PSA))
+					techniques.add(TechniqueType.PSA);
 			if (technique.equals("RND"));
 				if (!techniques.contains(TechniqueType.RND))
 					techniques.add(TechniqueType.RND);

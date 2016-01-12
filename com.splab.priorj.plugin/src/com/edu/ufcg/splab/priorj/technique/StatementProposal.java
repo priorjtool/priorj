@@ -4,12 +4,12 @@ import java.util.List;
 
 import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
 
-public class StatementEchelonChanged {
+public class StatementProposal {
 
 	private String statement;
 	private List<TestCase> testCases;
 	
-	public StatementEchelonChanged(String statement, List<TestCase> testcases) {
+	public StatementProposal(String statement, List<TestCase> testcases) {
 		super();
 		this.statement = statement;
 		this.testCases = testcases;

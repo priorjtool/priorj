@@ -1,7 +1,9 @@
 package com.edu.ufcg.splab.priorj.technique;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.edu.ufcg.splab.priorj.coverage.model.ClassCode;
 import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
 
 /*
@@ -29,7 +31,7 @@ import com.edu.ufcg.splab.priorj.coverage.model.TestCase;
  * @author Berg Élisson.
  * @version 1.1
  */
-public class TestCaseEchelon {
+public class TestCaseProposal {
 
 	private double weight;
 	private TestCase testCase;
@@ -42,7 +44,7 @@ public class TestCaseEchelon {
 	 * @param weight a weight for this test case.
 	 * @param testCase a test case.
 	 */
-	public TestCaseEchelon(final double weight, final TestCase testCase,
+	public TestCaseProposal(final double weight, final TestCase testCase,
 			final List<String> statementCoverage){
 		this.weight = weight;
 		this.testCase = testCase;

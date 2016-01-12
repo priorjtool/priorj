@@ -98,8 +98,11 @@ public class GenerateCoverageReport {
           for (TestSuite suite : suites) {
         	String suiteName = suite.toString();
           	for (TestCase testcase : suite.getTestCases()) {
+          		if(testcase.getName().equals("testCanPassTestNameToConstructor")) {
+          			System.out.println(extractSuiteSignature(testcase));
+          		}
           		builder.append("\tcoverage.push({\n");
-          		builder.append("\t\ttestsuite  : '"+suiteName+"',\n");
+          		builder.append("\t\ttestsuite  : '"+extractSuiteSignature(testcase)+"',\n");
           		builder.append("\t\ttestcase   : '"+testcase.getName()+"',\n");
           		builder.append("\t\tclasses    : "+getCountUniqueClassCoverage(testcase) + ",\n");
           		builder.append("\t\tmethods    : "+getCountUniqueMethodCoverage(testcase) + ",\n");
@@ -131,6 +134,18 @@ public class GenerateCoverageReport {
           builder.append("\t}\n\n");
         	
           return builder.toString();          
+	}
+	
+	/**
+	 * Extracts suite signature.
+	 * 
+	 * @param testcase
+	 * 			TestCase.
+	 * @return String with the suite signature.
+	 */
+	private String extractSuiteSignature(final TestCase testcase) {
+		String signature = testcase.getSignature();
+		return signature.replace("." + testcase.getName(), "");
 	}
 	
 	/**

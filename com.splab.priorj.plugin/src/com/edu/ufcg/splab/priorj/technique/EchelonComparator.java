@@ -2,7 +2,7 @@ package com.edu.ufcg.splab.priorj.technique;
 
 import java.util.Comparator;
 
-public class EchelonComparator implements Comparator<TestCaseEchelon> {
+public class EchelonComparator implements Comparator<TestCaseProposal> {
 
 	public static final int BY_SCORE = 1;  
     public static final int BY_WEIGHT = 2;  
@@ -14,8 +14,8 @@ public class EchelonComparator implements Comparator<TestCaseEchelon> {
 	}
 
 	@Override
-	public int compare(TestCaseEchelon obj1,
-			TestCaseEchelon obj2) {
+	public int compare(TestCaseProposal obj1,
+			TestCaseProposal obj2) {
         switch (this.comparatorType) {  
             case BY_SCORE:  
                 Double score1 = new Double(obj1.getScore());
