@@ -255,7 +255,9 @@ public class TechniqueProposalStatementTotal extends ModificationTechnique imple
         
         List<String> suiteList = getSignatureWeightedList(weightedList);
     	this.weightList = new ArrayList<String> (suiteList);
-        this.notWeightList = new ArrayList<String>(getSignatureNotWeightedList(notWeightedList));
+    	// Testes que não foram afetados são ordenados randomicamente.
+    	Collections.shuffle(notWeightedList);
+    	this.notWeightList = new ArrayList<String>(getSignatureNotWeightedList(notWeightedList));
     	suiteList.addAll(this.notWeightList);
         return suiteList;
     }

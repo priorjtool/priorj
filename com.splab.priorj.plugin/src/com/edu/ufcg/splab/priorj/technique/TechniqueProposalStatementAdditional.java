@@ -105,6 +105,10 @@ public class TechniqueProposalStatementAdditional extends ModificationTechnique 
     private void calulateWeight(List<TestCaseProposal> weightedList, List<TestCase> notWeightedList,
     		final List<TestCase> copyList) {
     	TestCase test = null;
+    	if(this.affectedBlocks.isEmpty()) {
+    		notWeightedList.addAll(copyList);
+    		return;
+    	}
     	while(!copyList.isEmpty() && !this.affectedBlocks.isEmpty()){
             test = biggerWeight(copyList, weightedList, notWeightedList);
             if (!test.getSignature().isEmpty() && getWeight(test) > 0.0) {
@@ -255,7 +259,9 @@ public class TechniqueProposalStatementAdditional extends ModificationTechnique 
         
         List<String> suiteList = getSignatureWeightedList(weightedList);
     	this.weightList = new ArrayList<String> (suiteList);
-        this.notWeightList = new ArrayList<String>(getSignatureNotWeightedList(notWeightedList));
+        // Testes que não foram afetados são ordenados randomicamente.
+    	Collections.shuffle(notWeightedList);
+    	this.notWeightList = new ArrayList<String>(getSignatureNotWeightedList(notWeightedList));
     	suiteList.addAll(this.notWeightList);
         
     	return suiteList;
